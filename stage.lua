@@ -17,7 +17,7 @@ local layerOneSpeed = 2
 local layerTwoSpeed = .6
 local layerThreeSpeed = .3
 
-local ground2, background, ground, rect, trees, trees2, mtn, mtn2
+local ground2, background, ground, rect, trees, trees2, mtn, mtn2, cloud1, cloud2
 
 local g = graphics.newGradient(
 	  { 211, 255, 192 },
@@ -43,13 +43,12 @@ end
 function scene:createScene( event )
 	local group = self.view
 
-	-- sets gradient 'g' on rect
-	rect = display.newRect( group, 0, 0, display.contentWidth, display.contentHeight)
-	rect:setFillColor( g ) 
-	rect.anchorX = 0
-	rect.anchorY = 0
-
-	group:insert(rect)
+	background = display.newImage( myImageSheet , sheetInfo:getFrameIndex("background_blue_green"))
+	background.x = 0
+	background.y = 0
+	background.anchorX = 0
+	background.anchorY = 0
+	group:insert(background)
 
 	mtn = display.newImage(myImageSheet, sheetInfo:getFrameIndex("mountains"))
 	mtn.x = 0
@@ -66,6 +65,22 @@ function scene:createScene( event )
 	mtn2.anchorY = 1
 	mtn2.alpha = 0.3
 	group:insert(mtn2)
+
+
+	cloud1 = display.newImage(myImageSheet, sheetInfo:getFrameIndex("cloud_large"))
+	cloud1.x = display.contentWidth + 50
+	cloud1.y = math.random(50, 150)
+	cloud1.anchorX = 0
+	cloud1.anchorY = 0
+	group:insert(cloud1)
+
+	cloud2 = display.newImage(myImageSheet, sheetInfo:getFrameIndex("cloud_small"))
+	cloud2.x = (display.contentWidth * 2) + 50
+	cloud2.y = math.random(50,150)
+	cloud2.anchorX = 0
+	cloud2.anchorY = 0
+	group:insert(cloud2)
+
 
 	trees = display.newImage( myImageSheet, sheetInfo:getFrameIndex('trees'))
 	trees.x = 0
@@ -228,6 +243,16 @@ function scrollBackground()
 	mtn.x = mtn.x - layerThreeSpeed
 	mtn2.x = mtn2.x - layerThreeSpeed
 
+	cloud1.x = cloud1.x - layerTwoSpeed
+	cloud2.x = cloud2.x - layerTwoSpeed  * 1.1
+
+	if( (cloud1.x + cloud1.width) < 0 ) then
+		cloud1.x = (display.contentWidth + 50)
+	end 
+
+	if(  (cloud2.x + cloud2.width) < 0 ) then
+		cloud2.x = (display.contentWidth * 2) + 50
+	end
 
 
 	if((ground.x + ground.width) < 0) then
