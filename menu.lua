@@ -27,7 +27,7 @@ function scene:createScene( event )
 
 	local group = self.view
 
-	background = display.newImage( myImageSheet , sheetInfo:getFrameIndex("start_background"))
+	background = display.newImage( myImageSheet , sheetInfo:getFrameIndex("background_blue_green"))
 	background.x = 0
 	background.y = 0
 	background.anchorX = 0

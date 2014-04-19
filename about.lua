@@ -26,24 +26,24 @@ function scene:createScene( event )
 	--Font name for 8bit font
 	--8-Bit-Madness
 	fontOptions = {
-		text = "Version 1.0:\n\nDesigned and Developed by:\nDanica Sheridan\nMike Sheridan\n\nCopyright 2014\nwww.interactivearmy.com",
+		text = "Version 1.0:\n\nDesigned and Developed by:\n\nDanica Sheridan\nMike Sheridan\n\nCopyright 2014\nwww.interactivearmy.com",
 		fontSize = 18,
 		x = 0,
 		y = 0,
 		width = 300,
 		height = 300,
-		font = native.systemFont
+		font = "8-Bit Madness"
 	}
 	
 	authorText = display.newText(fontOptions)
-	authorText.x = 50
+	authorText.x = 20
 	authorText.y = display.contentHeight
 	authorText.anchorX = 0
 	authorText.anchorY = 0
-	authorText:setFillColor(.4,.4,.4)
+	authorText:setFillColor(1,1,1)
 
 
-	background = display.newImage( myImageSheet , sheetInfo:getFrameIndex("start_background"))
+	background = display.newImage( myImageSheet , sheetInfo:getFrameIndex("background_blue_green"))
 	background.x = 0
 	background.y = 0
 	background.anchorX = 0

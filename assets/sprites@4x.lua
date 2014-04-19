@@ -1,7 +1,7 @@
 --
 -- created with TexturePacker (http://www.codeandweb.com/texturepacker)
 --
--- $TexturePacker:SmartUpdate:965b77092252ed27c741423d6bf0de7d:b63b00c6c9e663a2692ae208bc447a71:f5c322b4188998d6cd973301e8657e5f$
+-- $TexturePacker:SmartUpdate:e1a39c676c5992fbf74c173e0145f148:37492e0c7770f73caf02ea755a376850:f5c322b4188998d6cd973301e8657e5f$
 --
 -- local sheetInfo = require("mysheet")
 -- local myImageSheet = graphics.newImageSheet( "mysheet.png", sheetInfo:getSheet() )
@@ -15,266 +15,302 @@ SheetInfo.sheet =
     frames = {
     
         {
+            -- background_blue_green
+            x=8,
+            y=2164,
+            width=1280,
+            height=1920,
+
+        },
+        {
             -- bird_1
-            x=1114,
-            y=1122,
-            width=254,
-            height=124,
+            x=3000,
+            y=2552,
+            width=508,
+            height=248,
 
         },
         {
             -- bird_2
-            x=1032,
-            y=1258,
-            width=254,
-            height=124,
+            x=2484,
+            y=2436,
+            width=508,
+            height=248,
 
         },
         {
             -- bird_green
-            x=1372,
-            y=1200,
-            width=142,
-            height=76,
+            x=3624,
+            y=2244,
+            width=284,
+            height=152,
 
         },
         {
             -- bird_green_flying_1
-            x=1824,
-            y=1038,
-            width=150,
-            height=80,
+            x=3648,
+            y=2076,
+            width=300,
+            height=160,
 
         },
         {
             -- bird_green_flying_2
-            x=1824,
-            y=954,
-            width=150,
-            height=80,
+            x=3648,
+            y=1908,
+            width=300,
+            height=160,
 
         },
         {
             -- bird_green_flying_3
-            x=1824,
-            y=1038,
-            width=150,
-            height=80,
+            x=3648,
+            y=2076,
+            width=300,
+            height=160,
 
         },
         {
             -- bird_green_flying_4
-            x=1824,
-            y=954,
-            width=150,
-            height=80,
+            x=3648,
+            y=1908,
+            width=300,
+            height=160,
 
         },
         {
             -- bird_green_flying_5
-            x=1824,
-            y=1038,
-            width=150,
-            height=80,
+            x=3648,
+            y=2076,
+            width=300,
+            height=160,
 
         },
         {
             -- bird_green_flying_6
-            x=1824,
-            y=870,
-            width=150,
-            height=80,
+            x=3648,
+            y=1740,
+            width=300,
+            height=160,
 
         },
         {
             -- button_about-over
-            x=1772,
-            y=1188,
-            width=196,
-            height=52,
+            x=2484,
+            y=2804,
+            width=392,
+            height=104,
 
         },
         {
             -- button_about
-            x=1780,
-            y=1126,
-            width=200,
-            height=58,
+            x=3516,
+            y=2676,
+            width=400,
+            height=116,
 
         },
         {
             -- button_back-over
-            x=1572,
-            y=1144,
-            width=196,
-            height=52,
+            x=2484,
+            y=2692,
+            width=392,
+            height=104,
 
         },
         {
             -- button_back
-            x=1576,
-            y=1082,
-            width=200,
-            height=58,
+            x=3516,
+            y=2552,
+            width=400,
+            height=116,
 
         },
         {
             -- button_start-over
-            x=1372,
-            y=1144,
-            width=196,
-            height=52,
+            x=3516,
+            y=2800,
+            width=392,
+            height=104,
 
         },
         {
             -- button_start
-            x=1372,
-            y=1082,
-            width=200,
-            height=58,
+            x=3136,
+            y=2428,
+            width=400,
+            height=116,
 
         },
         {
             -- cloud_large
-            x=788,
-            y=1122,
-            width=322,
-            height=132,
+            x=2484,
+            y=2164,
+            width=644,
+            height=264,
 
         },
         {
             -- cloud_small
-            x=1824,
-            y=734,
-            width=178,
-            height=132,
+            x=3648,
+            y=1468,
+            width=356,
+            height=264,
 
         },
         {
             -- coin
-            x=1290,
-            y=1250,
-            width=46,
-            height=64,
-
-        },
-        {
-            -- coin32
-            x=1978,
-            y=870,
-            width=24,
-            height=32,
-
-        },
-        {
-            -- derpy_bird_logo
-            x=648,
-            y=1412,
-            width=436,
-            height=214,
-
-        },
-        {
-            -- ground
-            x=4,
-            y=584,
-            width=2000,
-            height=146,
-
-        },
-        {
-            -- heart_empty
-            x=1518,
-            y=1200,
-            width=38,
-            height=40,
-
-        },
-        {
-            -- heart_full
-            x=1780,
-            y=1082,
-            width=38,
-            height=40,
-
-        },
-        {
-            -- mountains
-            x=4,
-            y=4,
-            width=2000,
-            height=576,
-
-        },
-        {
-            -- ring
-            x=648,
-            y=1122,
-            width=136,
-            height=286,
-
-        },
-        {
-            -- start_background
-            x=4,
-            y=1082,
-            width=640,
-            height=960,
-
-        },
-        {
-            -- start_bird
-            x=788,
-            y=1258,
-            width=240,
+            x=2336,
+            y=2164,
+            width=92,
             height=128,
 
         },
         {
+            -- coin32
+            x=3956,
+            y=1740,
+            width=48,
+            height=64,
+
+        },
+        {
+            -- coin_brown
+            x=2336,
+            y=2300,
+            width=88,
+            height=128,
+
+        },
+        {
+            -- derpy_bird_logo
+            x=1576,
+            y=3472,
+            width=872,
+            height=428,
+
+        },
+        {
+            -- game_over_box
+            x=1296,
+            y=2244,
+            width=1032,
+            height=1220,
+
+        },
+        {
+            -- game_over_title
+            x=1576,
+            y=3908,
+            width=900,
+            height=152,
+
+        },
+        {
+            -- ground
+            x=8,
+            y=1168,
+            width=4000,
+            height=292,
+
+        },
+        {
+            -- heart_empty
+            x=3916,
+            y=2332,
+            width=76,
+            height=80,
+
+        },
+        {
+            -- heart_full
+            x=3916,
+            y=2244,
+            width=76,
+            height=80,
+
+        },
+        {
+            -- mountains
+            x=8,
+            y=8,
+            width=4000,
+            height=1152,
+
+        },
+        {
+            -- ring
+            x=1296,
+            y=3472,
+            width=272,
+            height=572,
+
+        },
+        {
+            -- ring_brown
+            x=3624,
+            y=2404,
+            width=68,
+            height=140,
+
+        },
+        {
+            -- start_bird
+            x=3136,
+            y=2164,
+            width=480,
+            height=256,
+
+        },
+        {
             -- trees
-            x=4,
-            y=734,
-            width=1816,
-            height=344,
+            x=8,
+            y=1468,
+            width=3632,
+            height=688,
 
         },
     },
     
-    sheetContentWidth = 2008,
-    sheetContentHeight = 2046
+    sheetContentWidth = 4016,
+    sheetContentHeight = 4092
 }
 
 SheetInfo.frameIndex =
 {
 
-    ["bird_1"] = 1,
-    ["bird_2"] = 2,
-    ["bird_green"] = 3,
-    ["bird_green_flying_1"] = 4,
-    ["bird_green_flying_2"] = 5,
-    ["bird_green_flying_3"] = 6,
-    ["bird_green_flying_4"] = 7,
-    ["bird_green_flying_5"] = 8,
-    ["bird_green_flying_6"] = 9,
-    ["button_about-over"] = 10,
-    ["button_about"] = 11,
-    ["button_back-over"] = 12,
-    ["button_back"] = 13,
-    ["button_start-over"] = 14,
-    ["button_start"] = 15,
-    ["cloud_large"] = 16,
-    ["cloud_small"] = 17,
-    ["coin"] = 18,
-    ["coin32"] = 19,
-    ["derpy_bird_logo"] = 20,
-    ["ground"] = 21,
-    ["heart_empty"] = 22,
-    ["heart_full"] = 23,
-    ["mountains"] = 24,
-    ["ring"] = 25,
-    ["start_background"] = 26,
-    ["start_bird"] = 27,
-    ["trees"] = 28,
+    ["background_blue_green"] = 1,
+    ["bird_1"] = 2,
+    ["bird_2"] = 3,
+    ["bird_green"] = 4,
+    ["bird_green_flying_1"] = 5,
+    ["bird_green_flying_2"] = 6,
+    ["bird_green_flying_3"] = 7,
+    ["bird_green_flying_4"] = 8,
+    ["bird_green_flying_5"] = 9,
+    ["bird_green_flying_6"] = 10,
+    ["button_about-over"] = 11,
+    ["button_about"] = 12,
+    ["button_back-over"] = 13,
+    ["button_back"] = 14,
+    ["button_start-over"] = 15,
+    ["button_start"] = 16,
+    ["cloud_large"] = 17,
+    ["cloud_small"] = 18,
+    ["coin"] = 19,
+    ["coin32"] = 20,
+    ["coin_brown"] = 21,
+    ["derpy_bird_logo"] = 22,
+    ["game_over_box"] = 23,
+    ["game_over_title"] = 24,
+    ["ground"] = 25,
+    ["heart_empty"] = 26,
+    ["heart_full"] = 27,
+    ["mountains"] = 28,
+    ["ring"] = 29,
+    ["ring_brown"] = 30,
+    ["start_bird"] = 31,
+    ["trees"] = 32,
 }
 
 function SheetInfo:getSheet()
