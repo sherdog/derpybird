@@ -10,7 +10,7 @@ local scene = storyboard.newScene()
 
 function startGame(event)
 	if event.phase == 'ended' then
-		gotoScene("game")
+		gotoScene("gameover")
 	end
 end
 
@@ -26,8 +26,9 @@ function scene:createScene(event)
 	screenGroup:insert(background)
 
 	local logo = display.newImage(myImageSheet, sheetInfo:getFrameIndex("derpy_bird_logo"))
+	logo.anchorY = 0
 	logo.x = display.contentWidth/2
-	logo.y = display.contentHeight/2 + 60
+	logo.y = 20
 
 	screenGroup:insert(logo)
 
@@ -36,8 +37,8 @@ function scene:createScene(event)
 		top = 0,
 		left = 0,
 		sheet = myImageSheet,
-		defaultFrame = 4,
-		overFrame = 3
+		defaultFrame = 5,
+		overFrame = 4
 	}
 
 	buttonPlay.x = display.contentWidth/2
@@ -47,26 +48,31 @@ function scene:createScene(event)
 
 	screenGroup:insert(buttonPlay)
 
-	local derpBird = display.newImage(myImageSheet, sheetInfo:getFrameIndex("bird_large_front"))
+	local derpBird = display.newImage(myImageSheet, sheetInfo:getFrameIndex("bird_large_front-2"))
 	derpBird.x = display.contentWidth/2
-	derpBird.y = 20
+	derpBird.y = display.contentHeight  - 70
 	derpBird.anchorX = 0.5
-	derpBird.anchorY = 0
-	derpBird.xScale = .1
-	derpBird.yScale = .1
+	derpBird.anchorY = 1
 
 	screenGroup:insert(derpBird)
+
+
 
 	--Animate bird in to hit screen :)
 
 end
 
+function onScaleComplete(event)
+
+	derpBird.visible = false
+
+
+end
+
+
+
 function enterFrame(event)
-	if derpBird.xScale < 1.0 then
-		derpBird.xScale = derpBird.xScale + .1
-		derpBird.yScale = derpBird.yScale + .1
-	end
-	print "frame"
+
 end
 
 function scene:enterScene(event)

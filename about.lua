@@ -1,6 +1,7 @@
+
 -----------------------------------------------------------------------------------------
 --
--- menu.lua
+-- about.lua
 --
 -----------------------------------------------------------------------------------------
 local physics = require "physics"
@@ -15,17 +16,32 @@ local scene = storyboard.newScene()
 local sheetInfo = require("assets.sprites")
 local myImageSheet = graphics.newImageSheet( "assets/sprites.png", sheetInfo:getSheet() )
 
-local flyingBird, smallCloud, background, buttonAbout, buttonPlay, logo, flyingBirdSequence
 
+local fontOptions, authorText, background, buttonBack, logo
 
-
--- Called immediately after scene has moved onscreen:
-function scene:enterScene( event )
-	local group = self.view
-end
 function scene:createScene( event )
-
 	local group = self.view
+	
+
+	--Font name for 8bit font
+	--8-Bit-Madness
+	fontOptions = {
+		text = "Version 1.0:\n\nDesigned and Developed by:\nDanica Sheridan\nMike Sheridan\n\nCopyright 2014\nwww.interactivearmy.com",
+		fontSize = 18,
+		x = 0,
+		y = 0,
+		width = 300,
+		height = 300,
+		font = native.systemFont
+	}
+	
+	authorText = display.newText(fontOptions)
+	authorText.x = 50
+	authorText.y = display.contentHeight
+	authorText.anchorX = 0
+	authorText.anchorY = 0
+	authorText:setFillColor(.4,.4,.4)
+
 
 	background = display.newImage( myImageSheet , sheetInfo:getFrameIndex("start_background"))
 	background.x = 0
@@ -34,13 +50,6 @@ function scene:createScene( event )
 	background.anchorY = 0
 	group:insert(background)
 
-	smallCloud = display.newImage( myImageSheet , sheetInfo:getFrameIndex("cloud_small"))
-	smallCloud.x = 0
-	smallCloud.y = 100
-	smallCloud.anchorX = 1
-	smallCloud.anchorY = 0
-	group:insert(smallCloud)
-
 	logo = display.newImage(myImageSheet, sheetInfo:getFrameIndex("derpy_bird_logo"))
 	logo.anchorY = 	0
 	logo.x = display.contentWidth/2
@@ -48,80 +57,44 @@ function scene:createScene( event )
 
 	group:insert(logo)
 
-	flyingBirdSequence = {
-		{ name = "slow", frames={4,9}, time=200 }
-	}
-
-	flyingBird = display.newSprite( myImageSheet, flyingBirdSequence )
-	flyingBird.x = display.contentWidth/2
-	flyingBird.y =  logo.x + 100	
-	flyingBird.anchorX = 0.5
-	flyingBird.anchorY = 1
-
-	flyingBird:play( )
-
-	buttonPlay = widget.newButton
+	buttonBack = widget.newButton
 	{
 		top = 0,
 		left = 0,
 		sheet = myImageSheet,
-		defaultFrame = 15,
-		overFrame = 14,
-		onEvent = playButtonClick
-	}
-
-	buttonPlay.x = display.contentWidth/2
-	buttonPlay.y = display.contentHeight/2 + 100
-	buttonPlay.anchorX = 0.5
-	buttonPlay.anchorY = 0
-
-	group:insert(buttonPlay)
-
-	buttonAbout = widget.newButton
-	{
-		top = 0,
-		left = 0,
-		sheet = myImageSheet,
-		defaultFrame = 11,
+		defaultFrame = 13,
 		overFrame = 12,
-		onEvent = aboutButtonClick
+		onEvent = btnBack_Click
 	}
 
-	buttonAbout.x = display.contentWidth/2
-	buttonAbout.y = buttonPlay.y + 40
-	buttonAbout.anchorX = 0.5
-	buttonAbout.anchorY = 0
+	buttonBack.x = display.contentWidth/2
+	buttonBack.y = display.contentHeight/2 + 100
+	buttonBack.anchorX = 0.5
+	buttonBack.anchorY = 0
 
-	group:insert(buttonAbout)
+	group:insert(buttonBack)
+	
 end
 
-function aboutButtonClick(event)
-	storyboard.gotoScene("about")
-	storyboard.purgeScene("menu")
-
+function btnBack_Click(event)
+	storyboard.gotoScene("menu")
 end
 
-function playButtonClick(event)
-	storyboard.gotoScene("stage")
-	storyboard.purgeScene("menu")
-end
+function animateText(event)
+	local speed = .9
 
-function animateClouds(event)
-	local speed = .4
-	if smallCloud then
-		if(smallCloud.x > display.contentWidth + smallCloud.width) then
-			smallCloud.x = -smallCloud.width
+	if authorText then
+		if(authorText.y > 150) then
+			authorText.y= authorText.y - 2
 		end
-
-	smallCloud.x = smallCloud.x + (1 * speed)
 	end
 end
 
 -- Called when scene is about to move offscreen:
 function scene:exitScene( event )
 	local group = self.view
+	storyboard.purgeScene( "about" )
 	
-	-- INSERT code here (e.g. stop timers, remove listenets, unload sounds, etc.)
 	
 end
 
@@ -129,28 +102,24 @@ end
 function scene:destroyScene( event )
 	local group = self.view
 	
-	if flyingBird then
-		flyingBird:removeSelf()
-		flyingBird = nil
-	end
-
-	if smallCloud then
-		smallCloud:removeSelf()
-		smallCloud = nil
-	end
-
 	if background then
-		background:removeSelf()
+		background:removeSelf( )
 		background = nil
 	end
 
-	if buttonAbout then
-		buttonAbout:removeSelf()
-		buttonAbout = nil
+	if authorText then
+		authorText:removeSelf( )
+		authorText = nil
 	end
-	if buttonPlay then
-		buttonPlay:removeSelf()
-		buttonPlay = nil
+
+	if logo then
+		logo:removeSelf( )
+		logo = nil
+	end
+
+	if buttonBack then
+		buttonBack:removeSelf()
+		buttonBack = nil
 	end
 end
 
@@ -167,9 +136,8 @@ scene:addEventListener( "enterScene", scene )
 -- "exitScene" event is dispatched whenever before next scene's transition begins
 scene:addEventListener( "exitScene", scene )
 
+Runtime:addEventListener( "enterFrame", animateText )
 
--- Animate clouds in background
-Runtime:addEventListener( "enterFrame", animateClouds )
 -- "destroyScene" event is dispatched before view is unloaded, which can be
 -- automatically unloaded in low memory situations, or explicitly via a call to
 -- storyboard.purgeScene() or storyboard.removeScene().
