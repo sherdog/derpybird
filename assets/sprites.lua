@@ -1,7 +1,7 @@
 --
 -- created with TexturePacker (http://www.codeandweb.com/texturepacker)
 --
--- $TexturePacker:SmartUpdate:659601c29931679e4ca20d3513767e82:a04db1c95e55ca8dcc2aa0beb71e98d2:f5c322b4188998d6cd973301e8657e5f$
+-- $TexturePacker:SmartUpdate:b4ea8cef89b93f103b5e476a8395f76d:5a12ee075c9e596cae2eb30e8434f9a8:f5c322b4188998d6cd973301e8657e5f$
 --
 -- local sheetInfo = require("mysheet")
 -- local myImageSheet = graphics.newImageSheet( "mysheet.png", sheetInfo:getSheet() )
@@ -14,6 +14,14 @@ SheetInfo.sheet =
 {
     frames = {
     
+        {
+            -- background_blue_green
+            x=2,
+            y=541,
+            width=320,
+            height=480,
+
+        },
         {
             -- bird_1
             x=750,
@@ -88,24 +96,24 @@ SheetInfo.sheet =
         },
         {
             -- button_about-over
-            x=621,
-            y=701,
+            x=721,
+            y=730,
             width=98,
             height=26,
 
         },
         {
             -- button_about
-            x=879,
-            y=669,
+            x=621,
+            y=673,
             width=100,
             height=29,
 
         },
         {
             -- button_back-over
-            x=621,
-            y=673,
+            x=823,
+            y=706,
             width=98,
             height=26,
 
@@ -113,15 +121,31 @@ SheetInfo.sheet =
         {
             -- button_back
             x=879,
-            y=638,
+            y=675,
             width=100,
             height=29,
 
         },
         {
-            -- button_start-over
+            -- button_restart
             x=879,
-            y=700,
+            y=644,
+            width=100,
+            height=29,
+
+        },
+        {
+            -- button_restart_over
+            x=621,
+            y=704,
+            width=98,
+            height=26,
+
+        },
+        {
+            -- button_start-over
+            x=723,
+            y=702,
             width=98,
             height=26,
 
@@ -240,18 +264,18 @@ SheetInfo.sheet =
         },
         {
             -- ring_brown
-            x=906,
-            y=601,
+            x=886,
+            y=607,
             width=17,
             height=35,
 
         },
         {
-            -- start_background
-            x=2,
-            y=541,
-            width=320,
-            height=480,
+            -- ring_small
+            x=906,
+            y=601,
+            width=17,
+            height=35,
 
         },
         {
@@ -279,38 +303,41 @@ SheetInfo.sheet =
 SheetInfo.frameIndex =
 {
 
-    ["bird_1"] = 1,
-    ["bird_2"] = 2,
-    ["bird_green"] = 3,
-    ["bird_green_flying_1"] = 4,
-    ["bird_green_flying_2"] = 5,
-    ["bird_green_flying_3"] = 6,
-    ["bird_green_flying_4"] = 7,
-    ["bird_green_flying_5"] = 8,
-    ["bird_green_flying_6"] = 9,
-    ["button_about-over"] = 10,
-    ["button_about"] = 11,
-    ["button_back-over"] = 12,
-    ["button_back"] = 13,
-    ["button_start-over"] = 14,
-    ["button_start"] = 15,
-    ["cloud_large"] = 16,
-    ["cloud_small"] = 17,
-    ["coin"] = 18,
-    ["coin32"] = 19,
-    ["coin_brown"] = 20,
-    ["derpy_bird_logo"] = 21,
-    ["game_over_box"] = 22,
-    ["game_over_title"] = 23,
-    ["ground"] = 24,
-    ["heart_empty"] = 25,
-    ["heart_full"] = 26,
-    ["mountains"] = 27,
-    ["ring"] = 28,
-    ["ring_brown"] = 29,
-    ["background_blue_green"] = 30,
-    ["start_bird"] = 31,
-    ["trees"] = 32,
+    ["background_blue_green"] = 1,
+    ["bird_1"] = 2,
+    ["bird_2"] = 3,
+    ["bird_green"] = 4,
+    ["bird_green_flying_1"] = 5,
+    ["bird_green_flying_2"] = 6,
+    ["bird_green_flying_3"] = 7,
+    ["bird_green_flying_4"] = 8,
+    ["bird_green_flying_5"] = 9,
+    ["bird_green_flying_6"] = 10,
+    ["button_about-over"] = 11,
+    ["button_about"] = 12,
+    ["button_back-over"] = 13,
+    ["button_back"] = 14,
+    ["button_restart"] = 15,
+    ["button_restart_over"] = 16,
+    ["button_start-over"] = 17,
+    ["button_start"] = 18,
+    ["cloud_large"] = 19,
+    ["cloud_small"] = 20,
+    ["coin"] = 21,
+    ["coin32"] = 22,
+    ["coin_brown"] = 23,
+    ["derpy_bird_logo"] = 24,
+    ["game_over_box"] = 25,
+    ["game_over_title"] = 26,
+    ["ground"] = 27,
+    ["heart_empty"] = 28,
+    ["heart_full"] = 29,
+    ["mountains"] = 30,
+    ["ring"] = 31,
+    ["ring_brown"] = 32,
+    ["ring_small"] = 33,
+    ["start_bird"] = 34,
+    ["trees"] = 35,
 }
 
 function SheetInfo:getSheet()

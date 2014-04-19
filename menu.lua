@@ -22,6 +22,8 @@ local flyingBird, smallCloud, background, buttonAbout, buttonPlay, logo, flyingB
 -- Called immediately after scene has moved onscreen:
 function scene:enterScene( event )
 	local group = self.view
+
+	storyboard.removeScene("stage")
 end
 function scene:createScene( event )
 
@@ -49,7 +51,7 @@ function scene:createScene( event )
 	group:insert(logo)
 
 	flyingBirdSequence = {
-		{ name = "slow", frames={4,9}, time=200 }
+		{ name = "slow", frames={5,10}, time=200 }
 	}
 
 	flyingBird = display.newSprite( myImageSheet, flyingBirdSequence )
@@ -65,8 +67,8 @@ function scene:createScene( event )
 		top = 0,
 		left = 0,
 		sheet = myImageSheet,
-		defaultFrame = 15,
-		overFrame = 14,
+		defaultFrame = 18,
+		overFrame = 17,
 		onEvent = playButtonClick
 	}
 

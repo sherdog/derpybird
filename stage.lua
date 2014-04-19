@@ -28,7 +28,7 @@ gameStarted = false
 
 function scene:enterScene( event )
 	local group = self.view
-	storyboard.removeScene("start")
+	storyboard.removeScene("menu")
 	Runtime:addEventListener("touch", flyUp)
     Runtime:addEventListener("collision", onCollision)
     memTimer = timer.performWithDelay( 1000, checkMemory, 0 )
@@ -111,7 +111,7 @@ function scene:createScene( event )
 	group:insert(ground2)
 
 	flyingBirdSequence = {
-		{ name = "slow", frames={4,9}, time=200 }
+		{ name = "slow", frames={5, 10}, time=200 }
 	}
 
 	flyingBird = display.newSprite( myImageSheet, flyingBirdSequence )
@@ -134,16 +134,6 @@ function scene:createScene( event )
 	elements.y = 0
 	group:insert(elements)
 
-	fontOptions = {
-		text = "0",
-		fontSize = 18,
-		x = 0,
-		y = 0,
-		width = 300,
-		height = 300,
-		font = native.systemFont
-	}
-
 	scoreText = display.newText(mydata.score, display.contentCenterX, 90, "8-Bit Madness", 70)
 	scoreText:setFillColor( 0,0,0 )
 	scoreText.alpha = 1
@@ -153,7 +143,13 @@ function scene:createScene( event )
 	-- Lives & Coins
 
 	hud = display.newGroup()
+	hud.x = 0
+	hud.y = 0
+	hud.anchorX = 0
+	hud.anchorY = 0
 
+	group:insert(hud)
+	
 	xText = display.newText( "X",30, 20, native.systemFontBold,  10 )
 	xText:setFillColor( 0,0,0 )
 	xText.alpha = 1
@@ -169,6 +165,7 @@ function scene:createScene( event )
 	coinIcon.y = 20
 
 	hud:insert(coinIcon)
+
 
 end
 
@@ -193,7 +190,7 @@ end
 
 function onCollision( event )
 	if ( event.phase == "began" ) then
-		storyboard.gotoScene("menu")	
+		storyboard.gotoScene("restart")	
 	end
 end
 
@@ -234,6 +231,7 @@ end
 
 
 function scrollBackground()
+	
 	ground.x = ground.x - layerOneSpeed
 	ground2.x = ground2.x - layerOneSpeed
 
@@ -284,8 +282,7 @@ end
 function scene:exitScene(event)
 
 	Runtime:removeEventListener("touch", flyUp)
-	Runtime:removeEventListener("enterFrame", platform)
-	Runtime:removeEventListener("enterFrame", platform2)
+	Runtime:removeEventListener("enterFrame", scrollBackground)
 	Runtime:removeEventListener("collision", onCollision)
 	timer.cancel(addHoopTimer)
 	timer.cancel(moveHoopTimer)
