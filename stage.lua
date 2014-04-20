@@ -112,6 +112,14 @@ function scene:createScene( event )
 	ground2.anchorY = 1
 	group:insert(ground2)
 
+	instructions = display.newImage(myImageSheet, sheetInfo:getFrameIndex("instructions"))
+	instructions.x = display.contentCenterX - (instructions.width/2)
+	instructions.y = (display.contentCenterY - (instructions.height/2));
+	instructions.anchorX = 0
+	instructions.anchorY = 0
+
+	group:insert(instructions)
+
 	physics.addBody(ground2, "static", {density=.1, bounce=0.1, friction=1})
 
 	flyingBirdSequence = {
@@ -119,7 +127,7 @@ function scene:createScene( event )
 	}
 
 	flyingBird = display.newSprite( myImageSheet, flyingBirdSequence )
-	flyingBird.x = display.contentWidth/2
+	flyingBird.x = (display.contentWidth/2) - 80
 	flyingBird.y = display.contentHeight/2	
 	flyingBird.anchorX = 0.5
 	flyingBird.anchorY = 1
