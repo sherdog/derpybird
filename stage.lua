@@ -17,7 +17,7 @@ local layerOneSpeed = 2
 local layerTwoSpeed = .6
 local layerThreeSpeed = .3
 
-local ground2, background, ground, rect, trees, trees2, mtn, mtn2, cloud1, cloud2
+local ground2, background, ground, rect, trees, trees2, mtn, mtn2, cloud1, cloud2, instructions
 
 local g = graphics.newGradient(
 	  { 211, 255, 192 },
@@ -186,7 +186,7 @@ function flyUp(event)
        
 		if gameStarted == false then
 			 flyingBird.bodyType = "dynamic"
-			 --instructions.alpha = 0
+			 instructions.alpha = 0
 			 --tb.alpha = 1
 			 scoreText.alpha = 1
 			 hud.alpha = 1
