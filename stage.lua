@@ -103,12 +103,16 @@ function scene:createScene( event )
 	ground.anchorY = 1
 	group:insert(ground)
 
+	physics.addBody(ground, "static", {density=.1, bounce=0.1, friction=1})
+
 	ground2 = display.newImage( myImageSheet , sheetInfo:getFrameIndex("ground"))
 	ground2:translate(ground.width, display.contentHeight)
 	ground2.y = display.contentHeight
 	ground2.anchorX = 0
 	ground2.anchorY = 1
 	group:insert(ground2)
+
+	physics.addBody(ground2, "static", {density=.1, bounce=0.1, friction=1})
 
 	flyingBirdSequence = {
 		{ name = "slow", frames={5, 10}, time=200 }
@@ -202,7 +206,7 @@ function addHoops()
 	hoop.anchorX = 0.5
 	hoop.anchorY = 0.5
 	hoop.scoreAdded = false
-	physics.addBody(hoop, "static", {density=1, bounce=0.1, friction=.2})
+	
 	elements:insert(hoop)
 end
 
