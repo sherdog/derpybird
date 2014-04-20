@@ -140,7 +140,7 @@ function scene:createScene( event )
 
 	scoreText = display.newText(mydata.score, display.contentCenterX, 90, "8-Bit Madness", 70)
 	scoreText:setFillColor( 0,0,0 )
-	scoreText.alpha = 1
+	scoreText.alpha = 0
 	group:insert(scoreText)
 
 	--Create HUD
@@ -157,7 +157,7 @@ function scene:createScene( event )
 	xText = display.newText( "X",30, 20, native.systemFontBold,  10 )
 	xText:setFillColor( 0,0,0 )
 	xText.alpha = 1
-	group:insert(xText)
+	hud:insert(xText)
 
 	coinText = display.newText( mydata.coins, 43, 21, "8-Bit Madness", 30)
 	coinText:setFillColor( 0,0,0 )
@@ -169,7 +169,7 @@ function scene:createScene( event )
 	coinIcon.y = 20
 
 	hud:insert(coinIcon)
-
+	hud.alpha = 0
 
 end
 
@@ -180,6 +180,8 @@ function flyUp(event)
 			 flyingBird.bodyType = "dynamic"
 			 --instructions.alpha = 0
 			 --tb.alpha = 1
+			 scoreText.alpha = 1
+			 hud.alpha = 1
 			 addHoopTimer = timer.performWithDelay(math.random(2000, math.random(4000, 5000)), addHoops, -1)
 			 moveHoopTimer = timer.performWithDelay(90, moveHoops, -1)
 			 gameStarted = true

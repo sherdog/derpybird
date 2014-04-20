@@ -13,7 +13,7 @@ function listener(event)
       -- Upon successful login, request list of friends
       if ( "login" == event.phase ) then
          -- Show the friends picker
-         facebook.showDialog( "friends", onComplete )
+       --  facebook.showDialog( "friends", onComplete )
       end
    elseif ( "dialog" == event.type ) then
       print( event.response )
@@ -26,36 +26,36 @@ function showStart()
 end
 
 function showShare()
-	facebook.login( "1482803695265952", listener, { "publish_actions" } )
-	local attachment = {
-    message = "Corona Icon file",
-    source = {
-        baseDir=system.DocumentsDirectory, 
-        filename="coronaIcon.png",
-        type="image"
-    }
-}
+	--facebook.login( "1482803695265952", listener, { "publish_actions" } )
+		
 
-facebook.request( "me/photos", "POST", attachment )
+	--facebook.request( "me/photos", "POST", attachment )
 end
 
-function showScore()
-	
-end
-
-function showGameOver()
-
-end
-
-function restartGame(event)
-     if event.phase == "ended" then
-		--saveScore()
-		storyboard.gotoScene("stage")
-     end
+function loadScore()
+	local prevScore = score.load()
+	print('prev score: ' .. prevScore)
+	if prevScore ~= nil then
+		if prevScore <= mydata.score then
+			score.set(mydata.score)
+		else 
+			score.set(prevScore)	
+		end
+	else 
+		score.set(mydata.score)	
+		score.save()
+	end
 end
 
 function saveScore()
 	score.save()
+end
+
+function restartGame(event)
+     if event.phase == "ended" then
+		saveScore()
+		storyboard.gotoScene("stage")
+     end
 end
 
 function scene:enterScene(event)
