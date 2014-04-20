@@ -5,10 +5,38 @@ local score = require( "score" )
 local sheetInfo = require("assets.sprites")
 local myImageSheet = graphics.newImageSheet( "assets/sprites.png", sheetInfo:getSheet() )
 local widget = require("widget")
+local facebook = require( "facebook" )
+local json = require("json")
+
+function listener(event)
+	if ( "session" == event.type ) then
+      -- Upon successful login, request list of friends
+      if ( "login" == event.phase ) then
+         -- Show the friends picker
+         facebook.showDialog( "friends", onComplete )
+      end
+   elseif ( "dialog" == event.type ) then
+      print( event.response )
+   end
+end
 
 function showStart()
 	startTransition = transition.to(restart,{time=200, alpha=1})
 
+end
+
+function showShare()
+	facebook.login( "1482803695265952", listener, { "publish_actions" } )
+	local attachment = {
+    message = "Corona Icon file",
+    source = {
+        baseDir=system.DocumentsDirectory, 
+        filename="coronaIcon.png",
+        type="image"
+    }
+}
+
+facebook.request( "me/photos", "POST", attachment )
 end
 
 function showScore()
@@ -69,16 +97,33 @@ function scene:createScene(event)
 		left = 0,
 		sheet = myImageSheet,
 		defaultFrame = 15,
-		overFrame = 14,
+		overFrame = 16,
 		onEvent = restartGame
 	}
 
 	buttonRestart.x = display.contentWidth/2
-	buttonRestart.y = display.contentHeight/2 + 100
+	buttonRestart.y = display.contentHeight/2
 	buttonRestart.anchorX = 0.5
 	buttonRestart.anchorY = 0
 
 	group:insert(buttonRestart)
+
+	buttonShare = widget.newButton
+	{
+		top = 0,
+		left = 0,
+		sheet = myImageSheet,
+		defaultFrame = 15,
+		overFrame = 16,
+		onEvent = showShare()
+	}
+
+	buttonShare.x = display.contentWidth/2
+	buttonShare.y = display.contentHeight/2 + 100
+	buttonShare.anchorX = 0.5
+	buttonShare.anchorY = 0
+
+	group:insert(buttonShare)
 	
 
 	coinIcon = display.newImage(myImageSheet, sheetInfo:getFrameIndex("ring_small"))

@@ -1,9 +1,18 @@
 settings =
 {
+    plugins = {
+      
+    },
     iphone =
     {
         plist =
         {
+            FacebookAppID = "1482803695265952",
+            CFBundleURLTypes = {
+                {
+                CFBundleURLSchemes = { "1482803695265952", }
+                }
+            },
             UIAppFonts = { "eight_bit_madness.ttf" },
             CFBundleIconFiles = {
             "Icon.png",
