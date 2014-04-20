@@ -5,29 +5,57 @@ local score = require( "score" )
 local sheetInfo = require("assets.sprites")
 local myImageSheet = graphics.newImageSheet( "assets/sprites.png", sheetInfo:getSheet() )
 local widget = require("widget")
+local facebook = require( "facebook" )
+local json = require("json")
+
+function listener(event)
+	if ( "session" == event.type ) then
+      -- Upon successful login, request list of friends
+      if ( "login" == event.phase ) then
+         -- Show the friends picker
+       --  facebook.showDialog( "friends", onComplete )
+      end
+   elseif ( "dialog" == event.type ) then
+      print( event.response )
+   end
+end
 
 function showStart()
 	startTransition = transition.to(restart,{time=200, alpha=1})
 
 end
 
-function showScore()
-	
+function showShare()
+	--facebook.login( "1482803695265952", listener, { "publish_actions" } )
+		
+
+	--facebook.request( "me/photos", "POST", attachment )
 end
 
-function showGameOver()
+function loadScore()
+	local prevScore = score.load()
+	print('prev score: ' .. prevScore)
+	if prevScore ~= nil then
+		if prevScore <= mydata.score then
+			score.set(mydata.score)
+		else 
+			score.set(prevScore)	
+		end
+	else 
+		score.set(mydata.score)	
+		score.save()
+	end
+end
 
+function saveScore()
+	--score.save()
 end
 
 function restartGame(event)
      if event.phase == "ended" then
-		--saveScore()
+		saveScore()
 		storyboard.gotoScene("stage")
      end
-end
-
-function saveScore()
-	score.save()
 end
 
 function scene:enterScene(event)
@@ -69,16 +97,33 @@ function scene:createScene(event)
 		left = 0,
 		sheet = myImageSheet,
 		defaultFrame = 15,
-		overFrame = 14,
+		overFrame = 16,
 		onEvent = restartGame
 	}
 
 	buttonRestart.x = display.contentWidth/2
-	buttonRestart.y = display.contentHeight/2 + 100
+	buttonRestart.y = display.contentHeight/2
 	buttonRestart.anchorX = 0.5
 	buttonRestart.anchorY = 0
 
 	group:insert(buttonRestart)
+
+	buttonShare = widget.newButton
+	{
+		top = 0,
+		left = 0,
+		sheet = myImageSheet,
+		defaultFrame = 15,
+		overFrame = 16,
+		onEvent = showShare()
+	}
+
+	buttonShare.x = display.contentWidth/2
+	buttonShare.y = display.contentHeight/2 + 100
+	buttonShare.anchorX = 0.5
+	buttonShare.anchorY = 0
+
+	group:insert(buttonShare)
 	
 
 	coinIcon = display.newImage(myImageSheet, sheetInfo:getFrameIndex("ring_small"))

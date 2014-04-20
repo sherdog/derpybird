@@ -17,7 +17,7 @@ local layerOneSpeed = 2
 local layerTwoSpeed = .6
 local layerThreeSpeed = .3
 
-local ground2, background, ground, rect, trees, trees2, mtn, mtn2, cloud1, cloud2
+local ground2, background, ground, rect, trees, trees2, mtn, mtn2, cloud1, cloud2, instructions
 
 local g = graphics.newGradient(
 	  { 211, 255, 192 },
@@ -112,6 +112,14 @@ function scene:createScene( event )
 	ground2.anchorY = 1
 	group:insert(ground2)
 
+	instructions = display.newImage(myImageSheet, sheetInfo:getFrameIndex("instructions"))
+	instructions.x = display.contentCenterX - (instructions.width/2)
+	instructions.y = (display.contentCenterY - (instructions.height/2));
+	instructions.anchorX = 0
+	instructions.anchorY = 0
+
+	group:insert(instructions)
+
 	physics.addBody(ground2, "static", {density=.1, bounce=0.1, friction=1})
 
 	flyingBirdSequence = {
@@ -119,7 +127,7 @@ function scene:createScene( event )
 	}
 
 	flyingBird = display.newSprite( myImageSheet, flyingBirdSequence )
-	flyingBird.x = display.contentWidth/2
+	flyingBird.x = (display.contentWidth/2) - 80
 	flyingBird.y = display.contentHeight/2	
 	flyingBird.anchorX = 0.5
 	flyingBird.anchorY = 1
@@ -140,7 +148,7 @@ function scene:createScene( event )
 
 	scoreText = display.newText(mydata.score, display.contentCenterX, 90, "8-Bit Madness", 70)
 	scoreText:setFillColor( 0,0,0 )
-	scoreText.alpha = 1
+	scoreText.alpha = 0
 	group:insert(scoreText)
 
 	--Create HUD
@@ -157,7 +165,7 @@ function scene:createScene( event )
 	xText = display.newText( "X",30, 20, native.systemFontBold,  10 )
 	xText:setFillColor( 0,0,0 )
 	xText.alpha = 1
-	group:insert(xText)
+	hud:insert(xText)
 
 	coinText = display.newText( mydata.coins, 43, 21, "8-Bit Madness", 30)
 	coinText:setFillColor( 0,0,0 )
@@ -169,7 +177,7 @@ function scene:createScene( event )
 	coinIcon.y = 20
 
 	hud:insert(coinIcon)
-
+	hud.alpha = 0
 
 end
 
@@ -178,8 +186,10 @@ function flyUp(event)
        
 		if gameStarted == false then
 			 flyingBird.bodyType = "dynamic"
-			 --instructions.alpha = 0
+			 instructions.alpha = 0
 			 --tb.alpha = 1
+			 scoreText.alpha = 1
+			 hud.alpha = 1
 			 addHoopTimer = timer.performWithDelay(math.random(2000, math.random(4000, 5000)), addHoops, -1)
 			 moveHoopTimer = timer.performWithDelay(90, moveHoops, -1)
 			 gameStarted = true

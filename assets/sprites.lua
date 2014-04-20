@@ -1,7 +1,7 @@
 --
 -- created with TexturePacker (http://www.codeandweb.com/texturepacker)
 --
--- $TexturePacker:SmartUpdate:980e5db5572d93f53bc10fc856d3b0b3:4a6ae599f09d6c2fc6e0894b0bb38bae:f5c322b4188998d6cd973301e8657e5f$
+-- $TexturePacker:SmartUpdate:e8a64e5ab11397db1653a7676b50e183:a60442862c28844650df63c659a554b6:f5c322b4188998d6cd973301e8657e5f$
 --
 -- local sheetInfo = require("mysheet")
 -- local myImageSheet = graphics.newImageSheet( "mysheet.png", sheetInfo:getSheet() )
@@ -24,15 +24,15 @@ SheetInfo.sheet =
         },
         {
             -- bird_1
-            x=869,
-            y=561,
+            x=584,
+            y=605,
             width=127,
             height=62,
 
         },
         {
             -- bird_2
-            x=740,
+            x=584,
             y=541,
             width=127,
             height=62,
@@ -97,15 +97,15 @@ SheetInfo.sheet =
         {
             -- button_about-over
             x=584,
-            y=569,
+            y=794,
             width=98,
             height=26,
 
         },
         {
             -- button_about
-            x=862,
-            y=625,
+            x=584,
+            y=735,
             width=100,
             height=29,
 
@@ -113,15 +113,15 @@ SheetInfo.sheet =
         {
             -- button_back-over
             x=584,
-            y=541,
+            y=766,
             width=98,
             height=26,
 
         },
         {
             -- button_back
-            x=584,
-            y=836,
+            x=740,
+            y=713,
             width=100,
             height=29,
 
@@ -137,15 +137,15 @@ SheetInfo.sheet =
         {
             -- button_restart_over
             x=740,
-            y=671,
+            y=744,
             width=98,
             height=26,
 
         },
         {
             -- button_start-over
-            x=862,
-            y=656,
+            x=842,
+            y=726,
             width=98,
             height=26,
 
@@ -232,18 +232,26 @@ SheetInfo.sheet =
         },
         {
             -- heart_empty
-            x=659,
-            y=998,
+            x=983,
+            y=583,
             width=19,
             height=20,
 
         },
         {
             -- heart_full
-            x=638,
-            y=998,
+            x=983,
+            y=561,
             width=19,
             height=20,
+
+        },
+        {
+            -- instructions
+            x=719,
+            y=541,
+            width=187,
+            height=170,
 
         },
         {
@@ -256,8 +264,8 @@ SheetInfo.sheet =
         },
         {
             -- ring
-            x=584,
-            y=671,
+            x=908,
+            y=561,
             width=73,
             height=163,
 
@@ -280,8 +288,8 @@ SheetInfo.sheet =
         },
         {
             -- start_bird
-            x=740,
-            y=605,
+            x=584,
+            y=669,
             width=120,
             height=64,
 
@@ -332,12 +340,13 @@ SheetInfo.frameIndex =
     ["ground"] = 27,
     ["heart_empty"] = 28,
     ["heart_full"] = 29,
-    ["mountains"] = 30,
-    ["ring"] = 31,
-    ["ring_brown"] = 32,
-    ["ring_small"] = 33,
-    ["start_bird"] = 34,
-    ["trees"] = 35,
+    ["instructions"] = 30,
+    ["mountains"] = 31,
+    ["ring"] = 32,
+    ["ring_brown"] = 33,
+    ["ring_small"] = 34,
+    ["start_bird"] = 35,
+    ["trees"] = 36,
 }
 
 function SheetInfo:getSheet()
