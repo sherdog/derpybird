@@ -48,7 +48,7 @@ function loadScore()
 end
 
 function saveScore()
-	score.save()
+	--score.save()
 end
 
 function restartGame(event)
