@@ -9,6 +9,7 @@ local scene = storyboard.newScene()
 
 mydata.coins = 0
 mydata.score = 0
+mydata.lives = 3
 
 local sheetInfo = require("assets.sprites")
 local myImageSheet = graphics.newImageSheet( "assets/sprites.png", sheetInfo:getSheet() )
@@ -23,6 +24,7 @@ local g = graphics.newGradient(
 	  { 211, 255, 192 },
 	  { 0, 111, 225 },
 	  "down" )
+
 local elements
 gameStarted = false
 
@@ -122,6 +124,15 @@ function scene:createScene( event )
 
 	physics.addBody(ground2, "static", {density=.1, bounce=0.1, friction=1})
 
+	--Bird stuff
+
+	birdGroup = display.newGroup()
+	birdGroup.x=0
+	birdGroup.y=0
+
+	group:insert(birdGroup)
+
+
 	flyingBirdSequence = {
 		{ name = "slow", frames={5, 10}, time=200 }
 	}
@@ -131,13 +142,15 @@ function scene:createScene( event )
 	flyingBird.y = display.contentHeight/2	
 	flyingBird.anchorX = 0.5
 	flyingBird.anchorY = 1
-
-	physics.addBody(flyingBird, "static", {density=.1, bounce=0.1, friction=1})
-	flyingBird:applyForce(0, -300, flyingBird.x, flyingBird.y)
+	flyingBird.isFixedRotation = true
+	
+	
 	flyingBird:play( )
-	group:insert(flyingBird)
+	birdGroup:insert(flyingBird)
 
-
+	physics.addBody(birdGroup, "static", {density=.1, bounce=0.1, friction=1})
+	
+	birdGroup:applyForce(0, -300, birdGroup.x, birdGroup.y)
 	elements = display.newGroup()
 	elements.anchorChildren = true
 	elements.anchorX = 0
@@ -185,7 +198,7 @@ function flyUp(event)
 	 if event.phase == "began" then
        
 		if gameStarted == false then
-			 flyingBird.bodyType = "dynamic"
+			 birdGroup.bodyType = "dynamic"
 			 instructions.alpha = 0
 			 --tb.alpha = 1
 			 scoreText.alpha = 1
@@ -193,10 +206,10 @@ function flyUp(event)
 			 addHoopTimer = timer.performWithDelay(math.random(2000, math.random(4000, 5000)), addHoops, -1)
 			 moveHoopTimer = timer.performWithDelay(90, moveHoops, -1)
 			 gameStarted = true
-			 flyingBird:applyForce(0, -190, flyingBird.x, flyingBird.y)
+			 birdGroup:applyForce(0, -190, birdGroup.x, birdGroup.y)
 		else 
        
-	    flyingBird:applyForce(0, -250, flyingBird.x, flyingBird.y)
+	    birdGroup:applyForce(0, -250, birdGroup.x, birdGroup.y)
 
       end
 	end
@@ -293,10 +306,36 @@ function scrollBackground()
 
 end
 
+
+local prevY = 0
+
+function enterFrame(event)
+
+		if(birdGroup.y > prevY) then
+			--rotate up
+			
+		--	flyingBird.rotation = 45
+			--transition.to( flyingBird, { rotation= 45, time=500} )
+			
+			diffY = math.ceil( birdGroup.y - prevY )
+			 
+			 flyingBird.rotation = (diffY * 1.1)
+			 --print('A diffy was: ' .. diffY .. ' and setting rotation to: ' .. flyingBird.rotation)
+		else
+			diffY = math.ceil( prevY  - birdGroup.y)
+			--transition.to( flyingBird, { rotation= -45, time=500 } )
+			flyingBird.rotation = (-diffY * 1.1)
+			 --print('B diffy was: ' .. diffY .. ' and setting rotation to: ' .. flyingBird.rotation)
+		--	flyingBird.rotation = -45
+		end
+		prevY = birdGroup.y
+end
+
 function scene:exitScene(event)
 
 	Runtime:removeEventListener("touch", flyUp)
 	Runtime:removeEventListener("enterFrame", scrollBackground)
+	Runtime:removeEventListener("enterFrame", enterFrame)
 	Runtime:removeEventListener("collision", onCollision)
 	timer.cancel(addHoopTimer)
 	timer.cancel(moveHoopTimer)
@@ -307,11 +346,9 @@ function scene:destroyScene(event)
 
 end
 
-
 -----------------------------------------------------------------------------------------
 -- END OF YOUR IMPLEMENTATION
 -----------------------------------------------------------------------------------------
-
 -- "createScene" event is dispatched if scene's view does not exist
 scene:addEventListener( "createScene", scene )
 
@@ -320,6 +357,8 @@ scene:addEventListener( "enterScene", scene )
 
 -- "exitScene" event is dispatched whenever before next scene's transition begins
 scene:addEventListener( "exitScene", scene )
+
+Runtime:addEventListener( "enterFrame", enterFrame)
 
 Runtime:addEventListener( "enterFrame", scrollBackground)
 -- "destroyScene" event is dispatched before view is unloaded, which can be
