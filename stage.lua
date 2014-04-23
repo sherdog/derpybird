@@ -18,7 +18,7 @@ local layerOneSpeed = 2
 local layerTwoSpeed = .6
 local layerThreeSpeed = .3
 
-local ground2, background, ground, rect, trees, trees2, mtn, mtn2, cloud1, cloud2, instructions
+local ground2, background, ground, rect, trees, trees2, mtn, mtn2, cloud1, cloud2, instructions, flyingBird,birdGroup
 
 local g = graphics.newGradient(
 	  { 211, 255, 192 },
@@ -103,6 +103,7 @@ function scene:createScene( event )
 	ground.y = display.contentHeight
 	ground.anchorX = 0
 	ground.anchorY = 1
+	ground.name = "ground"
 	group:insert(ground)
 
 	physics.addBody(ground, "static", {density=.1, bounce=0.1, friction=1})
@@ -112,6 +113,7 @@ function scene:createScene( event )
 	ground2.y = display.contentHeight
 	ground2.anchorX = 0
 	ground2.anchorY = 1
+	ground2.name ="ground2"
 	group:insert(ground2)
 
 	instructions = display.newImage(myImageSheet, sheetInfo:getFrameIndex("instructions"))
@@ -125,10 +127,18 @@ function scene:createScene( event )
 	physics.addBody(ground2, "static", {density=.1, bounce=0.1, friction=1})
 
 	--Bird stuff
+	elements_back = display.newGroup()
+	elements_back.anchorChildren = true
+	elements_back.anchorX = 0
+	elements_back.anchorY = 1
+	elements_back.x = 0
+	elements_back.y = 0
+	group:insert(elements_back)
 
 	birdGroup = display.newGroup()
 	birdGroup.x=0
 	birdGroup.y=0
+	birdGroup.name ="birdGroup"
 
 	group:insert(birdGroup)
 
@@ -142,22 +152,22 @@ function scene:createScene( event )
 	flyingBird.y = display.contentHeight/2	
 	flyingBird.anchorX = 0.5
 	flyingBird.anchorY = 1
-	flyingBird.isFixedRotation = true
-	
+	flyingBird.name = "bird"
 	
 	flyingBird:play( )
 	birdGroup:insert(flyingBird)
 
 	physics.addBody(birdGroup, "static", {density=.1, bounce=0.1, friction=1})
-	
+
 	birdGroup:applyForce(0, -300, birdGroup.x, birdGroup.y)
-	elements = display.newGroup()
-	elements.anchorChildren = true
-	elements.anchorX = 0
-	elements.anchorY = 1
-	elements.x = 0
-	elements.y = 0
-	group:insert(elements)
+
+	elements_front = display.newGroup()
+	elements_front.anchorChildren = true
+	elements_front.anchorX = 0
+	elements_front.anchorY = 1
+	elements_front.x = 0
+	elements_front.y = 0
+	group:insert(elements_front)
 
 	scoreText = display.newText(mydata.score, display.contentCenterX, 90, "8-Bit Madness", 70)
 	scoreText:setFillColor( 0,0,0 )
@@ -188,9 +198,22 @@ function scene:createScene( event )
 	coinIcon = display.newImage(myImageSheet, sheetInfo:getFrameIndex("coin32"))
 	coinIcon.x = 15
 	coinIcon.y = 20
+	heartCount = 3
+	heart = { }
+	local initHeartX = display.contentWidth - 20
+	for i=0, 2, 1 do
+		if(mydata.lives >= i) then
+			heart[i] = display.newImage(myImageSheet, sheetInfo:getFrameIndex("heart_full"))
+		else
+			heart[i] = display.newImage(myImageSheet, sheetInfo:getFrameIndex("heart_empty"))
+		end
+		
+		heart[i].x = (display.contentWidth - ((heart[i].width + 3) * (heartCount - i)))
+		heart[i].y = 20
+		hud:insert(heart[i])
+	end
 
 	hud:insert(coinIcon)
-	hud.alpha = 0
 
 end
 
@@ -215,38 +238,54 @@ function flyUp(event)
 	end
 end
 
+function gameOver()
+	storyboard.gotoScene("restart")	
+end
+
 function onCollision( event )
+
 	if ( event.phase == "began" ) then
-		storyboard.gotoScene("restart")	
+		gameOver()
 	end
 end
 
 function addHoops()
 
-	hoop = display.newImage( myImageSheet, sheetInfo:getFrameIndex("ring"))
+	hoop = display.newImage( myImageSheet, sheetInfo:getFrameIndex("ring_back"))
 	hoop.x = display.contentWidth + 100
 	hoop.y = math.random(display.contentCenterY - 50, display.contentCenterY + 50)
 	hoop.anchorX = 0.5
 	hoop.anchorY = 0.5
 	hoop.scoreAdded = false
-	
-	elements:insert(hoop)
+	hoop.name ="hoop_back"
+	elements_back:insert(hoop)
+
+	hoop_front = display.newImage( myImageSheet, sheetInfo:getFrameIndex("ring_front"))
+	hoop_front.x = (hoop.x + hoop.width)
+	hoop_front.y = hoop.y
+	hoop_front.anchorX = 0.5
+	hoop_front.anchorY = 0.5
+	hoop_front.scoreAdded = false
+	elements_front:insert(hoop_front)
 end
 
 function moveHoops()
 
-	for a = elements.numChildren,1,-1  do
-		if(elements[a].x < display.contentCenterX - 170) then
-			if elements[a].scoreAdded == false then
+	for a = elements_back.numChildren,1,-1  do
+		if(elements_back[a].x < display.contentCenterX - 170) then
+			if elements_back[a].scoreAdded == false then
 				mydata.score = mydata.score + 1
 				scoreText.text = mydata.score
-				elements[a].scoreAdded = true
+				elements_back[a].scoreAdded = true
 			end
 		end
-		if(elements[a].x > -100) then
-			elements[a].x = elements[a].x - 12
+		if(elements_back[a].x > -100) then
+			elements_back[a].x = elements_back[a].x - 12
+			elements_front[a].x = elements_back[a].x + elements_back[a].width
+			elements_front[a].y = elements_back[a].y
 		else 
-			elements:remove(elements[a])
+			elements_back:remove(elements_back[a])
+			elements_front:remove(elements_front[a])
 		end	
 	end
 
@@ -310,23 +349,16 @@ end
 local prevY = 0
 
 function enterFrame(event)
-
+	--if bird y is less than -200.. let's cap it at 200
+	if(birdGroup.y < -700) then
+		gameOver()
+	end
 		if(birdGroup.y > prevY) then
-			--rotate up
-			
-		--	flyingBird.rotation = 45
-			--transition.to( flyingBird, { rotation= 45, time=500} )
-			
 			diffY = math.ceil( birdGroup.y - prevY )
-			 
 			 flyingBird.rotation = (diffY * 1.1)
-			 --print('A diffy was: ' .. diffY .. ' and setting rotation to: ' .. flyingBird.rotation)
 		else
 			diffY = math.ceil( prevY  - birdGroup.y)
-			--transition.to( flyingBird, { rotation= -45, time=500 } )
 			flyingBird.rotation = (-diffY * 1.1)
-			 --print('B diffy was: ' .. diffY .. ' and setting rotation to: ' .. flyingBird.rotation)
-		--	flyingBird.rotation = -45
 		end
 		prevY = birdGroup.y
 end

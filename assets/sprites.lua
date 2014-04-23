@@ -1,7 +1,7 @@
 --
 -- created with TexturePacker (http://www.codeandweb.com/texturepacker)
 --
--- $TexturePacker:SmartUpdate:e8a64e5ab11397db1653a7676b50e183:a60442862c28844650df63c659a554b6:f5c322b4188998d6cd973301e8657e5f$
+-- $TexturePacker:SmartUpdate:85a5d3194d85bd7398cafc0a11980061:7f9300abe81ee0a62e1bca406055224b:f5c322b4188998d6cd973301e8657e5f$
 --
 -- local sheetInfo = require("mysheet")
 -- local myImageSheet = graphics.newImageSheet( "mysheet.png", sheetInfo:getSheet() )
@@ -97,15 +97,15 @@ SheetInfo.sheet =
         {
             -- button_about-over
             x=584,
-            y=794,
+            y=819,
             width=98,
             height=26,
 
         },
         {
             -- button_about
-            x=584,
-            y=735,
+            x=719,
+            y=922,
             width=100,
             height=29,
 
@@ -113,15 +113,15 @@ SheetInfo.sheet =
         {
             -- button_back-over
             x=584,
-            y=766,
+            y=791,
             width=98,
             height=26,
 
         },
         {
             -- button_back
-            x=740,
-            y=713,
+            x=707,
+            y=891,
             width=100,
             height=29,
 
@@ -136,16 +136,16 @@ SheetInfo.sheet =
         },
         {
             -- button_restart_over
-            x=740,
-            y=744,
+            x=584,
+            y=763,
             width=98,
             height=26,
 
         },
         {
             -- button_start-over
-            x=842,
-            y=726,
+            x=584,
+            y=735,
             width=98,
             height=26,
 
@@ -271,11 +271,27 @@ SheetInfo.sheet =
 
         },
         {
+            -- ring_back
+            x=749,
+            y=726,
+            width=34,
+            height=163,
+
+        },
+        {
             -- ring_brown
             x=570,
             y=976,
             width=17,
             height=35,
+
+        },
+        {
+            -- ring_front
+            x=707,
+            y=726,
+            width=40,
+            height=163,
 
         },
         {
@@ -343,10 +359,12 @@ SheetInfo.frameIndex =
     ["instructions"] = 30,
     ["mountains"] = 31,
     ["ring"] = 32,
-    ["ring_brown"] = 33,
-    ["ring_small"] = 34,
-    ["start_bird"] = 35,
-    ["trees"] = 36,
+    ["ring_back"] = 33,
+    ["ring_brown"] = 34,
+    ["ring_front"] = 35,
+    ["ring_small"] = 36,
+    ["start_bird"] = 37,
+    ["trees"] = 38,
 }
 
 function SheetInfo:getSheet()
