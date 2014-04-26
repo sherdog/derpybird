@@ -18,7 +18,7 @@ local layerOneSpeed = 2
 local layerTwoSpeed = .6
 local layerThreeSpeed = .3
 
-local ground2, background, ground, rect, trees, trees2, mtn, mtn2, cloud1, cloud2, instructions, flyingBird,birdGroup
+local ground2, background, ground, rect, trees, trees2, mtn, mtn2, cloud1, cloud2, instructions, flyingBird,birdGroup, hoop
 
 local g = graphics.newGradient(
 	  { 211, 255, 192 },
@@ -138,6 +138,8 @@ function scene:createScene( event )
 	birdGroup = display.newGroup()
 	birdGroup.x=0
 	birdGroup.y=0
+	birdGroup.anchorX = 0
+	birdGroup.anchorY = 0
 	birdGroup.name ="birdGroup"
 
 	group:insert(birdGroup)
@@ -160,6 +162,7 @@ function scene:createScene( event )
 	physics.addBody(birdGroup, "static", {density=.1, bounce=0.1, friction=1})
 
 	birdGroup:applyForce(0, -300, birdGroup.x, birdGroup.y)
+
 
 	elements_front = display.newGroup()
 	elements_front.anchorChildren = true
@@ -198,6 +201,7 @@ function scene:createScene( event )
 	coinIcon = display.newImage(myImageSheet, sheetInfo:getFrameIndex("coin32"))
 	coinIcon.x = 15
 	coinIcon.y = 20
+
 	heartCount = 3
 	heart = { }
 	local initHeartX = display.contentWidth - 20
@@ -249,6 +253,49 @@ function onCollision( event )
 	end
 end
 
+local isCheckingCollision = false
+
+function detectCollision()
+	
+	if isCheckingCollision then
+		return true
+	end
+
+	isCheckingCollision = true
+	
+	if(hasCollided(hoop, birdGroup)) then
+		--they are colliding! oh nos!
+	end
+		
+	isCheckingCollision = false
+	return true
+end
+
+function hasCollided(obj1, obj2)
+	if obj1 == nil then
+		return false
+	end
+
+	if obj2 == nil then
+		return false
+	end
+
+		hoopYTop = obj1.y
+		hoopYBottom = obj1.y + obj1.height
+
+		birdY = math.round( obj2.y + (display.contentHeight/2) )
+		local left = math.ceil(obj1.x - obj2.x) <= 10 and (math.ceil(obj1.x - obj2.x)) >= -10
+
+		if birdY < hoopYBottom and birdY > hoopYTop then
+			hitY = true
+		end
+
+		return (left and hitY)
+
+end
+
+hoopCount = 0
+
 function addHoops()
 
 	hoop = display.newImage( myImageSheet, sheetInfo:getFrameIndex("ring_back"))
@@ -256,27 +303,35 @@ function addHoops()
 	hoop.y = math.random(display.contentCenterY - 50, display.contentCenterY + 50)
 	hoop.anchorX = 0.5
 	hoop.anchorY = 0.5
+	physics.addBody(hoop, "static")
+	hoop.name ="hoop_back"..hoopCount
 	hoop.scoreAdded = false
-	hoop.name ="hoop_back"
 	elements_back:insert(hoop)
+
 
 	hoop_front = display.newImage( myImageSheet, sheetInfo:getFrameIndex("ring_front"))
 	hoop_front.x = (hoop.x + hoop.width)
 	hoop_front.y = hoop.y
 	hoop_front.anchorX = 0.5
 	hoop_front.anchorY = 0.5
-	hoop_front.scoreAdded = false
+	physics.addBody(hoop_front, "static")
 	elements_front:insert(hoop_front)
+	
+	hoopCount = hoopCount + 1
+
 end
 
 function moveHoops()
-
 	for a = elements_back.numChildren,1,-1  do
 		if(elements_back[a].x < display.contentCenterX - 170) then
-			if elements_back[a].scoreAdded == false then
+			if detectCollision(elements_back[a], birdGroup) then
+				elements_back[a].scoreAdded = true
+				print('fsdfldsfksdf')
+			end
+			if elements_back[a].scoreAdded == true then
 				mydata.score = mydata.score + 1
 				scoreText.text = mydata.score
-				elements_back[a].scoreAdded = true
+				elements_back[a].scoreAdded = false
 			end
 		end
 		if(elements_back[a].x > -100) then
@@ -350,6 +405,7 @@ local prevY = 0
 
 function enterFrame(event)
 	--if bird y is less than -200.. let's cap it at 200
+
 	if(birdGroup.y < -700) then
 		gameOver()
 	end
@@ -391,7 +447,6 @@ scene:addEventListener( "enterScene", scene )
 scene:addEventListener( "exitScene", scene )
 
 Runtime:addEventListener( "enterFrame", enterFrame)
-
 Runtime:addEventListener( "enterFrame", scrollBackground)
 -- "destroyScene" event is dispatched before view is unloaded, which can be
 -- automatically unloaded in low memory situations, or explicitly via a call to
