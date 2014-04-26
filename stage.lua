@@ -248,50 +248,23 @@ end
 
 function onCollision( event )
 
+	if(event.object1.name ~= nil)then
+		--print('event object 1: ' .. event.object1.name)
+	end
 	if ( event.phase == "began" ) then
-		gameOver()
+		--gameOver()
 	end
 end
 
-local isCheckingCollision = false
-
-function detectCollision()
+function onHoopCollision(self, event)
 	
-	if isCheckingCollision then
-		return true
+	if(event.phase == 'began') then
+		print(self.name .. 'collision has begun with: ' .. event.other.name)
 	end
 
-	isCheckingCollision = true
-	
-	if(hasCollided(hoop, birdGroup)) then
-		--they are colliding! oh nos!
+	if(event.phase == 'ended') then
+		print('collision has ended')
 	end
-		
-	isCheckingCollision = false
-	return true
-end
-
-function hasCollided(obj1, obj2)
-	if obj1 == nil then
-		return false
-	end
-
-	if obj2 == nil then
-		return false
-	end
-
-		hoopYTop = obj1.y
-		hoopYBottom = obj1.y + obj1.height
-
-		birdY = math.round( obj2.y + (display.contentHeight/2) )
-		local left = math.ceil(obj1.x - obj2.x) <= 10 and (math.ceil(obj1.x - obj2.x)) >= -10
-
-		if birdY < hoopYBottom and birdY > hoopYTop then
-			hitY = true
-		end
-
-		return (left and hitY)
-
 end
 
 hoopCount = 0
@@ -303,7 +276,10 @@ function addHoops()
 	hoop.y = math.random(display.contentCenterY - 50, display.contentCenterY + 50)
 	hoop.anchorX = 0.5
 	hoop.anchorY = 0.5
-	physics.addBody(hoop, "static")
+	physics.addBody( hoop, "static", { density=0.3, friction=0.5, bounce=0.3 } )
+
+	hoop.collision = onHoopCollision
+	hoop:addEventListener( "collision", hoop )
 	hoop.name ="hoop_back"..hoopCount
 	hoop.scoreAdded = false
 	elements_back:insert(hoop)
@@ -314,7 +290,6 @@ function addHoops()
 	hoop_front.y = hoop.y
 	hoop_front.anchorX = 0.5
 	hoop_front.anchorY = 0.5
-	physics.addBody(hoop_front, "static")
 	elements_front:insert(hoop_front)
 	
 	hoopCount = hoopCount + 1
@@ -324,17 +299,13 @@ end
 function moveHoops()
 	for a = elements_back.numChildren,1,-1  do
 		if(elements_back[a].x < display.contentCenterX - 170) then
-			if detectCollision(elements_back[a], birdGroup) then
-				elements_back[a].scoreAdded = true
-				print('fsdfldsfksdf')
-			end
 			if elements_back[a].scoreAdded == true then
 				mydata.score = mydata.score + 1
 				scoreText.text = mydata.score
 				elements_back[a].scoreAdded = false
 			end
 		end
-		if(elements_back[a].x > -100) then
+		if(elements_back[a].x > -34) then
 			elements_back[a].x = elements_back[a].x - 12
 			elements_front[a].x = elements_back[a].x + elements_back[a].width
 			elements_front[a].y = elements_back[a].y
@@ -405,6 +376,9 @@ local prevY = 0
 
 function enterFrame(event)
 	--if bird y is less than -200.. let's cap it at 200
+	if hoop ~= nil then
+		
+	end
 
 	if(birdGroup.y < -700) then
 		gameOver()
@@ -447,6 +421,7 @@ scene:addEventListener( "enterScene", scene )
 scene:addEventListener( "exitScene", scene )
 
 Runtime:addEventListener( "enterFrame", enterFrame)
+
 Runtime:addEventListener( "enterFrame", scrollBackground)
 -- "destroyScene" event is dispatched before view is unloaded, which can be
 -- automatically unloaded in low memory situations, or explicitly via a call to
