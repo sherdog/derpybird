@@ -9,7 +9,7 @@ local scene = storyboard.newScene()
 
 mydata.coins = 0
 mydata.score = 0
-mydata.lives = 3
+mydata.lives = 2
 
 local sheetInfo = require("assets.sprites")
 local myImageSheet = graphics.newImageSheet( "assets/sprites.png", sheetInfo:getSheet() )
@@ -18,7 +18,7 @@ local layerOneSpeed = 2
 local layerTwoSpeed = .6
 local layerThreeSpeed = .3
 
-local ground2, background, ground, rect, trees, trees2, mtn, mtn2, cloud1, cloud2, instructions, flyingBird,birdGroup, hoop
+local ground2, background, ground, rect, trees, trees2, mtn, mtn2, cloud1, cloud2, instructions, flyingBird,flyingBird, hoop, coin, wallTop, wallBottom
 
 local g = graphics.newGradient(
 	  { 211, 255, 192 },
@@ -26,20 +26,45 @@ local g = graphics.newGradient(
 	  "down" )
 
 local elements
-gameStarted = false
+local elementsTop
+
+local gameStarted = false
+
+
+function onCollision(event)
+	
+	if(event.phase == 'began') then
+		if(event.object1.id == 'ground' or event.object1.id == 'ground2') then
+			gameOver()
+		end
+	end
+
+	if(event.phase == 'ended') then
+	print('obj2 = ' .. event.object1.id)
+		--print('object was ' .. event.object2.id)
+		if(event.object2.id == 'hoop' and event.object1.id == 'dummy') then
+			event.object2.touched = true
+			mydata.score = mydata.score + 1
+			scoreText.text = mydata.score
+		end
+		if((event.object2.id == 'walltop' or event.object2.id == 'wallbottom') and event.object1.id == 'dummy') then
+			
+			mydata.lives = mydata.lives - 1
+			renderHearts()
+		end
+
+	end
+
+	return true
+end
+
+
 
 function scene:enterScene( event )
 	local group = self.view
 	storyboard.removeScene("menu")
-	Runtime:addEventListener("touch", flyUp)
-    Runtime:addEventListener("collision", onCollision)
+	
     memTimer = timer.performWithDelay( 1000, checkMemory, 0 )
-end
-
-local function checkMemory()
-   collectgarbage( "collect" )
-   local memUsage_str = string.format( "MEMORY = %.3f KB", collectgarbage( "count" ) )
-   print( memUsage_str, "TEXTURE = "..(system.getInfo("textureMemoryUsed") / (1024 * 1024) ) )
 end
 
 function scene:createScene( event )
@@ -68,7 +93,6 @@ function scene:createScene( event )
 	mtn2.alpha = 0.3
 	group:insert(mtn2)
 
-
 	cloud1 = display.newImage(myImageSheet, sheetInfo:getFrameIndex("cloud_large"))
 	cloud1.x = display.contentWidth + 50
 	cloud1.y = math.random(50, 150)
@@ -82,7 +106,6 @@ function scene:createScene( event )
 	cloud2.anchorX = 0
 	cloud2.anchorY = 0
 	group:insert(cloud2)
-
 
 	trees = display.newImage( myImageSheet, sheetInfo:getFrameIndex('trees'))
 	trees.x = 0
@@ -103,17 +126,18 @@ function scene:createScene( event )
 	ground.y = display.contentHeight
 	ground.anchorX = 0
 	ground.anchorY = 1
-	ground.name = "ground"
+	physics.addBody(ground, "static", {density=.1, bounce=0.1, friction=1})
+	ground.id = "ground"
 	group:insert(ground)
 
-	physics.addBody(ground, "static", {density=.1, bounce=0.1, friction=1})
 
 	ground2 = display.newImage( myImageSheet , sheetInfo:getFrameIndex("ground"))
 	ground2:translate(ground.width, display.contentHeight)
 	ground2.y = display.contentHeight
 	ground2.anchorX = 0
 	ground2.anchorY = 1
-	ground2.name ="ground2"
+	ground2.id ="ground2"
+	physics.addBody(ground2, "static", {density=.1, bounce=0.1, friction=1})
 	group:insert(ground2)
 
 	instructions = display.newImage(myImageSheet, sheetInfo:getFrameIndex("instructions"))
@@ -124,27 +148,28 @@ function scene:createScene( event )
 
 	group:insert(instructions)
 
-	physics.addBody(ground2, "static", {density=.1, bounce=0.1, friction=1})
+
+	elements = display.newGroup()
+	elements.anchorX = 0
+	elements.anchorY = 1
+	elements.x = 0
+	elements.y = 0
+	group:insert(elements)
+
+	dummyBird = display.newImage(myImageSheet, sheetInfo:getFrameIndex("bird_green"))
+	dummyBird.alpha = 0
+	dummyBird.x = (display.contentWidth/2) - 80
+	dummyBird.y = display.contentHeight/2
+	dummyBird.anchorX = 0.5
+	dummyBird.anchorY = 1
+	dummyBird.id = 'dummy'
+
+	group:insert(dummyBird)
+
+	physics.addBody(dummyBird, "static", {density=.1, bounce=0.1, friction=1})
+	dummyBird:applyForce(0, -300, dummyBird.x, dummyBird.y)
 
 	--Bird stuff
-	elements_back = display.newGroup()
-	elements_back.anchorChildren = true
-	elements_back.anchorX = 0
-	elements_back.anchorY = 1
-	elements_back.x = 0
-	elements_back.y = 0
-	group:insert(elements_back)
-
-	birdGroup = display.newGroup()
-	birdGroup.x=0
-	birdGroup.y=0
-	birdGroup.anchorX = 0
-	birdGroup.anchorY = 0
-	birdGroup.name ="birdGroup"
-
-	group:insert(birdGroup)
-
-
 	flyingBirdSequence = {
 		{ name = "slow", frames={5, 10}, time=200 }
 	}
@@ -154,23 +179,19 @@ function scene:createScene( event )
 	flyingBird.y = display.contentHeight/2	
 	flyingBird.anchorX = 0.5
 	flyingBird.anchorY = 1
-	flyingBird.name = "bird"
-	
+	flyingBird.id = "bird"
 	flyingBird:play( )
-	birdGroup:insert(flyingBird)
 
-	physics.addBody(birdGroup, "static", {density=.1, bounce=0.1, friction=1})
+	group:insert(flyingBird)
 
-	birdGroup:applyForce(0, -300, birdGroup.x, birdGroup.y)
-
-
-	elements_front = display.newGroup()
-	elements_front.anchorChildren = true
-	elements_front.anchorX = 0
-	elements_front.anchorY = 1
-	elements_front.x = 0
-	elements_front.y = 0
-	group:insert(elements_front)
+	
+	elementsTop = display.newGroup()
+	elementsTop.anchorX = 0
+	elementsTop.anchorY = 1
+	elementsTop.x = 0
+	elementsTop.y = 0
+	group:insert(elementsTop)
+	
 
 	scoreText = display.newText(mydata.score, display.contentCenterX, 90, "8-Bit Madness", 70)
 	scoreText:setFillColor( 0,0,0 )
@@ -202,30 +223,36 @@ function scene:createScene( event )
 	coinIcon.x = 15
 	coinIcon.y = 20
 
+	renderHearts()
+
+end
+
+function renderHearts()
 	heartCount = 3
 	heart = { }
+
 	local initHeartX = display.contentWidth - 20
+
 	for i=0, 2, 1 do
+		print('mydata.lives is: ' .. mydata.lives .. 'and i is: ' .. i)
 		if(mydata.lives >= i) then
 			heart[i] = display.newImage(myImageSheet, sheetInfo:getFrameIndex("heart_full"))
 		else
 			heart[i] = display.newImage(myImageSheet, sheetInfo:getFrameIndex("heart_empty"))
 		end
-		
 		heart[i].x = (display.contentWidth - ((heart[i].width + 3) * (heartCount - i)))
 		heart[i].y = 20
 		hud:insert(heart[i])
 	end
 
 	hud:insert(coinIcon)
-
 end
 
 function flyUp(event)
 	 if event.phase == "began" then
        
 		if gameStarted == false then
-			 birdGroup.bodyType = "dynamic"
+			 dummyBird.bodyType="dynamic"
 			 instructions.alpha = 0
 			 --tb.alpha = 1
 			 scoreText.alpha = 1
@@ -233,10 +260,9 @@ function flyUp(event)
 			 addHoopTimer = timer.performWithDelay(math.random(2000, math.random(4000, 5000)), addHoops, -1)
 			 moveHoopTimer = timer.performWithDelay(90, moveHoops, -1)
 			 gameStarted = true
-			 birdGroup:applyForce(0, -190, birdGroup.x, birdGroup.y)
+			 dummyBird:applyForce( 0, -190, dummyBird.x, dummyBird.y)
 		else 
-       
-	    birdGroup:applyForce(0, -250, birdGroup.x, birdGroup.y)
+       	    dummyBird:applyForce(0, -250, dummyBird.x, dummyBird.y)
 
       end
 	end
@@ -246,110 +272,78 @@ function gameOver()
 	storyboard.gotoScene("restart")	
 end
 
-function onCollision( event )
-
-	if ( event.phase == "began" ) then
-		gameOver()
-	end
-end
-
-local isCheckingCollision = false
-
-function detectCollision()
-	
-	if isCheckingCollision then
-		return true
-	end
-
-	isCheckingCollision = true
-	
-	if(hasCollided(hoop, birdGroup)) then
-		--they are colliding! oh nos!
-	end
-		
-	isCheckingCollision = false
-	return true
-end
-
-function hasCollided(obj1, obj2)
-	if obj1 == nil then
-		return false
-	end
-
-	if obj2 == nil then
-		return false
-	end
-
-		hoopYTop = obj1.y
-		hoopYBottom = obj1.y + obj1.height
-
-		birdY = math.round( obj2.y + (display.contentHeight/2) )
-		local left = math.ceil(obj1.x - obj2.x) <= 10 and (math.ceil(obj1.x - obj2.x)) >= -10
-
-		if birdY < hoopYBottom and birdY > hoopYTop then
-			hitY = true
-		end
-
-		return (left and hitY)
-
-end
-
 hoopCount = 0
 
 function addHoops()
+
+	--add walls above and below
+	--this will be used to detect if the bird misses the hoop.
+	--kind of a hack but i can't reliably figure out how to do it otherwise.
 
 	hoop = display.newImage( myImageSheet, sheetInfo:getFrameIndex("ring_back"))
 	hoop.x = display.contentWidth + 100
 	hoop.y = math.random(display.contentCenterY - 50, display.contentCenterY + 50)
 	hoop.anchorX = 0.5
 	hoop.anchorY = 0.5
-	physics.addBody(hoop, "static")
-	hoop.name ="hoop_back"..hoopCount
-	hoop.scoreAdded = false
-	elements_back:insert(hoop)
+	hoop.id ="hoop"
+	hoop.touched = false
+	hoop.test = "NO!"
+
+	physics.addBody(hoop, "static", { density=0, bounce=0.1, friction=0, isSensor = true})
+	elements:insert(hoop)
+
+	wallTop = display.newRect( hoop.x , 0, hoop.width, (hoop.y - (hoop.height/2) - 5) )
+	wallTop:setFillColor( 0.5 )
+	wallTop.anchorX = 0
+	wallTop.anchorY = 0
+	wallTop.id = 'walltop'
+	wallTop.alpha = 0
+	physics.addBody(wallTop, "static", { density=0, bounce=0.1, friction=0, isSensor=true})
+
+	elements:insert(wallTop)
+
+	wallBottom = display.newRect( hoop.x , ( hoop.y + (hoop.height / 2) + 5), hoop.width, 1000)
+	wallBottom:setFillColor( 0.5 )
+	wallBottom.anchorX = 0
+	wallBottom.anchorY = 0
+	wallBottom.id = 'wallbottom'
+	wallBottom.alpha = 0
+	physics.addBody(wallBottom, "static", { density=0, bounce=0.1, friction=0, isSensor=true})
+	elements:insert(wallBottom)
 
 
-	hoop_front = display.newImage( myImageSheet, sheetInfo:getFrameIndex("ring_front"))
-	hoop_front.x = (hoop.x + hoop.width)
-	hoop_front.y = hoop.y
-	hoop_front.anchorX = 0.5
-	hoop_front.anchorY = 0.5
-	physics.addBody(hoop_front, "static")
-	elements_front:insert(hoop_front)
-	
+	hoopFront = display.newImage(myImageSheet, sheetInfo:getFrameIndex('ring_front'))
+	hoopFront.x = hoop.x + hoop.width
+	hoopFront.y = hoop.y
+	hoopFront.anchorX = 0.5
+	hoopFront.anchorY = 0.5
+	hoopFront.id = "fuck"
+
+	elementsTop:insert(hoopFront)
+
 	hoopCount = hoopCount + 1
 
 end
 
+function removeHeart()
+	if(mydata.lives == 0) then
+		--doh last life.. it's game over!
+		gameOver()
+	else
+		mydata.lives = mydata.lives - 1
+		renderHearts()
+	end
+end
+
 function moveHoops()
-	for a = elements_back.numChildren,1,-1  do
-		if(elements_back[a].x < display.contentCenterX - 170) then
-			if detectCollision(elements_back[a], birdGroup) then
-				elements_back[a].scoreAdded = true
-				print('fsdfldsfksdf')
-			end
-			if elements_back[a].scoreAdded == true then
-				mydata.score = mydata.score + 1
-				scoreText.text = mydata.score
-				elements_back[a].scoreAdded = false
-			end
-		end
-		if(elements_back[a].x > -100) then
-			elements_back[a].x = elements_back[a].x - 12
-			elements_front[a].x = elements_back[a].x + elements_back[a].width
-			elements_front[a].y = elements_back[a].y
+	for a = elements.numChildren,1,-1  do
+		if(elements[a].x > -100) then
+			elements[a].x = elements[a].x - 12
 		else 
-			elements_back:remove(elements_back[a])
-			elements_front:remove(elements_front[a])
+			elements:remove(elements[a])
 		end	
 	end
-
 end
-
-function showCoin()
-
-end
-
 
 function scrollBackground()
 	
@@ -372,7 +366,6 @@ function scrollBackground()
 	if(  (cloud2.x + cloud2.width) < 0 ) then
 		cloud2.x = (display.contentWidth * 2) + 50
 	end
-
 
 	if((ground.x + ground.width) < 0) then
 		ground.x = (ground2.x+ground2.width)
@@ -400,31 +393,33 @@ function scrollBackground()
 
 end
 
-
 local prevY = 0
 
 function enterFrame(event)
 	--if bird y is less than -200.. let's cap it at 200
+	scrollBackground()
+	flyingBird.x = dummyBird.x
+	flyingBird.y = dummyBird.y
 
-	if(birdGroup.y < -700) then
+	if(dummyBird.y < -700) then
 		gameOver()
 	end
-		if(birdGroup.y > prevY) then
-			diffY = math.ceil( birdGroup.y - prevY )
-			 flyingBird.rotation = (diffY * 1.1)
-		else
-			diffY = math.ceil( prevY  - birdGroup.y)
-			flyingBird.rotation = (-diffY * 1.1)
-		end
-		prevY = birdGroup.y
+	
+	if(flyingBird.y > prevY) then
+		diffY = math.ceil( dummyBird.y - prevY )
+		flyingBird.rotation = (diffY * 1.1)
+	else
+		diffY = math.ceil( prevY  - dummyBird.y)
+		flyingBird.rotation = (-diffY * 1.1)
+	end
+
+	prevY = dummyBird.y
 end
 
 function scene:exitScene(event)
 
 	Runtime:removeEventListener("touch", flyUp)
-	Runtime:removeEventListener("enterFrame", scrollBackground)
 	Runtime:removeEventListener("enterFrame", enterFrame)
-	Runtime:removeEventListener("collision", onCollision)
 	timer.cancel(addHoopTimer)
 	timer.cancel(moveHoopTimer)
 
@@ -446,8 +441,11 @@ scene:addEventListener( "enterScene", scene )
 -- "exitScene" event is dispatched whenever before next scene's transition begins
 scene:addEventListener( "exitScene", scene )
 
+Runtime:addEventListener("touch", flyUp)
+
+Runtime:addEventListener("collision", onCollision)
+
 Runtime:addEventListener( "enterFrame", enterFrame)
-Runtime:addEventListener( "enterFrame", scrollBackground)
 -- "destroyScene" event is dispatched before view is unloaded, which can be
 -- automatically unloaded in low memory situations, or explicitly via a call to
 -- storyboard.purgeScene() or storyboard.removeScene().

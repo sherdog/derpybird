@@ -8,7 +8,6 @@ physics.start()
 local widget = require("widget")
 
 local mydata = require( "mydata" )
-
 local storyboard = require("storyboard")
 local scene = storyboard.newScene()
 
