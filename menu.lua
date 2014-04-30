@@ -121,9 +121,7 @@ end
 -- Called when scene is about to move offscreen:
 function scene:exitScene( event )
 	local group = self.view
-	
 	-- INSERT code here (e.g. stop timers, remove listenets, unload sounds, etc.)
-	
 end
 
 -- If scene's view is removed, scene:destroyScene() will be called just prior to:
