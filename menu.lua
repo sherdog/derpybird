@@ -62,7 +62,7 @@ function scene:createScene( event )
 	-- start with banner ad
 	showAd( "interstitial" )
 	end
-
+  
 	background = display.newImage( myImageSheet , sheetInfo:getFrameIndex("background_blue_green"))
 	background.x = 0
 	background.y = 0
