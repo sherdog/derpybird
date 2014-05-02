@@ -6,6 +6,7 @@ physics.setGravity( 0, 50 )
 local mydata = require( "mydata" )
 local storyboard = require ("storyboard")
 local scene = storyboard.newScene()
+local score = require('score')
 
 mydata.coins = 0
 mydata.score = 0
@@ -18,7 +19,7 @@ local layerOneSpeed = 2
 local layerTwoSpeed = .6
 local layerThreeSpeed = .3
 
-local ground2, background, ground, rect, trees, trees2, mtn, mtn2, cloud1, cloud2, instructions, flyingBird,flyingBird, hoop, coin, wallTop, wallBottom
+local ground2, background, ground, rect, trees, trees2, mtn, mtn2, cloud1, cloud2, instructions, flyingBird,flyingBird, hoop, wallTop, wallBottom
 
 local g = graphics.newGradient(
 	  { 211, 255, 192 },
@@ -26,10 +27,9 @@ local g = graphics.newGradient(
 	  "down" )
 
 local elements
-local elementsTop
+local coinGroup
 
 local gameStarted = false
-
 
 function onCollision(event)
 	
@@ -37,39 +37,43 @@ function onCollision(event)
 		if(event.object1.id == 'ground' or event.object1.id == 'ground2') then
 			gameOver()
 		end
+
+		print('1: ' .. event.object1.id .. ' and 2: ' .. event.object2.id)
+	end
+	print(event.object1.id .. event.object2.id)
+	if(event.object1.id == 'dummy' and event.object2.id == 'hoopTopRT') then
+
 	end
 
 	if(event.phase == 'ended') then
 	print('obj2 = ' .. event.object1.id)
 		--print('object was ' .. event.object2.id)
-		if(event.object2.id == 'hoop' and event.object1.id == 'dummy') then
+		if(event.object2.id == 'hoop' and event.object1.id == 'dummy' ) then
+			print("SHOULD TKAE SCORE DOWNNNN")
 			event.object2.touched = true
+			event.object1.touched = true
 			mydata.score = mydata.score + 1
 			scoreText.text = mydata.score
 		end
 		if((event.object2.id == 'walltop' or event.object2.id == 'wallbottom') and event.object1.id == 'dummy') then
-			
 			mydata.lives = mydata.lives - 1
 			renderHearts()
 		end
-
 	end
-
 	return true
 end
-
-
 
 function scene:enterScene( event )
 	local group = self.view
 	storyboard.removeScene("menu")
-	
     memTimer = timer.performWithDelay( 1000, checkMemory, 0 )
+
+
 end
 
 function scene:createScene( event )
 	local group = self.view
-
+	 mydata.score = 0
 	background = display.newImage( myImageSheet , sheetInfo:getFrameIndex("background_blue_green"))
 	background.x = 0
 	background.y = 0
@@ -155,18 +159,18 @@ function scene:createScene( event )
 	elements.x = 0
 	elements.y = 0
 	group:insert(elements)
-
-	dummyBird = display.newImage(myImageSheet, sheetInfo:getFrameIndex("bird_green"))
-	dummyBird.alpha = 0
-	dummyBird.x = (display.contentWidth/2) - 80
-	dummyBird.y = display.contentHeight/2
+	
+	dummyBird = display.newRect( (display.contentWidth/2) - 80 , display.contentHeight/2, 50, 30 )
+	dummyBird:setFillColor( 0.5 )
 	dummyBird.anchorX = 0.5
-	dummyBird.anchorY = 1
+	dummyBird.anchorY = 0
 	dummyBird.id = 'dummy'
+	dummyBird.alpha = 0
+	dummyBird.isFixedRotation = true
 
 	group:insert(dummyBird)
 
-	physics.addBody(dummyBird, "static", {density=.1, bounce=0.1, friction=1})
+	physics.addBody(dummyBird, "static", {density=.2, bounce=0.0, friction=1})
 	dummyBird:applyForce(0, -300, dummyBird.x, dummyBird.y)
 
 	--Bird stuff
@@ -178,12 +182,20 @@ function scene:createScene( event )
 	flyingBird.x = (display.contentWidth/2) - 80
 	flyingBird.y = display.contentHeight/2	
 	flyingBird.anchorX = 0.5
-	flyingBird.anchorY = 1
+	flyingBird.anchorY = 0
 	flyingBird.id = "bird"
 	flyingBird:play( )
+	flyingBird.alpha = 1
 
 	group:insert(flyingBird)
 
+	--Coin group
+	coinGroup = display.newGroup()
+	coinGroup.anchorX = 0
+	coinGroup.anchorY = 0
+	coinGroup.x = 0
+	coinGroup.y = 0
+	group:insert(coinGroup)
 	
 	elementsTop = display.newGroup()
 	elementsTop.anchorX = 0
@@ -191,12 +203,49 @@ function scene:createScene( event )
 	elementsTop.x = 0
 	elementsTop.y = 0
 	group:insert(elementsTop)
+
+	wallsTop = display.newGroup()
+	wallsTop.anchorX = 0
+	wallsTop.anchorY = 1
+	wallsTop.x = 0
+	wallsTop.y = 0
+
+	group:insert(wallsTop)
+
+	wallsBottom = display.newGroup()
+	wallsBottom.anchorX = 0
+	wallsBottom.anchorY = 1
+	wallsBottom.x = 0
+	wallsBottom.y = 0
+
+	group:insert(wallsBottom)
+
+	--Hitbox top inner ring, so bernie ricocchets 
+	hitBoxTop = display.newGroup()
+	hitBoxTop.anchorX = 0
+	hitBoxTop.anchorY = 1
+	hitBoxTop.x = 0
+	hitBoxTop.y = 0
+
+	group:insert(hitBoxTop)
 	
 
-	scoreText = display.newText(mydata.score, display.contentCenterX, 90, "8-Bit Madness", 70)
+	scoreText = score.init({
+		fontSize = 70,
+		font = "8-Bit Madness",
+		x = display.contentCenterX,
+		y = 90,
+		maxDigits = 4,
+		leadingZeros = false,
+		filename = "scorefile.txt",
+	})
+
 	scoreText:setFillColor( 0,0,0 )
 	scoreText.alpha = 0
+
 	group:insert(scoreText)
+
+	
 
 	--Create HUD
 	-- Lives & Coins
@@ -262,7 +311,7 @@ function flyUp(event)
 			 gameStarted = true
 			 dummyBird:applyForce( 0, -190, dummyBird.x, dummyBird.y)
 		else 
-       	    dummyBird:applyForce(0, -250, dummyBird.x, dummyBird.y)
+       	    dummyBird:applyLinearImpulse(0, -10, dummyBird.x, dummyBird.y)
 
       end
 	end
@@ -292,36 +341,47 @@ function addHoops()
 	physics.addBody(hoop, "static", { density=0, bounce=0.1, friction=0, isSensor = true})
 	elements:insert(hoop)
 
-	wallTop = display.newRect( hoop.x , 0, hoop.width, (hoop.y - (hoop.height/2) - 5) )
+	wallTop = display.newRect( hoop.x , 0, 1, (hoop.y - (hoop.height/2) - 5) )
 	wallTop:setFillColor( 0.5 )
 	wallTop.anchorX = 0
-	wallTop.anchorY = 0
+	wallTop.anchorY = 1
 	wallTop.id = 'walltop'
-	wallTop.alpha = 0
+	wallTop.alpha =0
 	physics.addBody(wallTop, "static", { density=0, bounce=0.1, friction=0, isSensor=true})
 
-	elements:insert(wallTop)
+	wallsTop:insert(wallTop)
 
-	wallBottom = display.newRect( hoop.x , ( hoop.y + (hoop.height / 2) + 5), hoop.width, 1000)
+	wallBottom = display.newRect( hoop.x , ( hoop.y + (hoop.height / 2) + 5), 1, 1000)
 	wallBottom:setFillColor( 0.5 )
 	wallBottom.anchorX = 0
 	wallBottom.anchorY = 0
 	wallBottom.id = 'wallbottom'
 	wallBottom.alpha = 0
 	physics.addBody(wallBottom, "static", { density=0, bounce=0.1, friction=0, isSensor=true})
-	elements:insert(wallBottom)
+	wallsBottom:insert(wallBottom)
 
 
-	hoopFront = display.newImage(myImageSheet, sheetInfo:getFrameIndex('ring_front'))
-	hoopFront.x = hoop.x + hoop.width
+	hoopFront = display.newImage( myImageSheet, sheetInfo:getFrameIndex("ring_front"))
+	hoopFront.x = (hoop.x + hoop.width)
 	hoopFront.y = hoop.y
 	hoopFront.anchorX = 0.5
 	hoopFront.anchorY = 0.5
-	hoopFront.id = "fuck"
-
 	elementsTop:insert(hoopFront)
 
+	for x = 0, 3,1 do
+		coin = display.newImage( myImageSheet, sheetInfo:getFrameIndex("coin"))
+		coin.x = (hoop.x + (hoop.x * 2) + 20)
+		coin.y = hoop.y + (hoop.height / 2)
+		coinGroup:insert(coin)
+	end
+
 	hoopCount = hoopCount + 1
+
+end
+
+function addCoins(x,y)
+
+
 
 end
 
@@ -336,13 +396,44 @@ function removeHeart()
 end
 
 function moveHoops()
-	for a = elements.numChildren,1,-1  do
-		if(elements[a].x > -100) then
-			elements[a].x = elements[a].x - 12
-		else 
-			elements:remove(elements[a])
+
+	print('NUM CHILDRES: ' .. elements.numChildren)
+
+	for b = elements.numChildren,1,-1 do
+		
+		if(elements[b].x < display.contentCenterX - 170) then
+			if elements[b].scoreAdded == true then
+				mydata.score = mydata.score + 1
+				scoreText.text = mydata.score
+				elements[b].scoreAdded = false
+			end
+		end
+
+		if( elements[b].x > -34 ) then
+
+			elements[b].x = elements[b].x - 12
+			
+			elementsTop[b].x = elements[b].x + elements[b].width
+			elementsTop[b].y = elements[b].y
+
+			wallsTop[b].x, wallsTop[b].y = elements[b].x + (elements[b].width/2), elements[b].y - (elements[b].height / 2) - 25
+
+			wallsBottom[b].x = elements[b].x + (elements[b].width / 2) 
+			wallsBottom[b].y = elements[b].y + (elements[b].height / 2) + 25
+
+		--	hitBoxTop[b].x, hitBoxTop[b].y = (elements[b].x + (hitBoxTop[b].width / 2) -5 ), elements[b].y - (elements[b].height / 2) + 22
+
+		else
+			elements:remove(elements[b])
+			elementsTop:remove(elementsTop[b])
+			wallsTop:remove(wallsTop[b])
+			wallsBottom:remove(wallsBottom[b])
+			hitBoxTop:remove(hitBoxTop[b])
+
 		end	
 	end
+
+
 end
 
 function scrollBackground()

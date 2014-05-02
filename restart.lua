@@ -26,15 +26,14 @@ function showStart()
 end
 
 function showShare()
-	--facebook.login( "1482803695265952", listener, { "publish_actions" } )
-		
-
-	--facebook.request( "me/photos", "POST", attachment )
+	facebook.login( "1482803695265952", listener, { "publish_actions" } )
+	facebook.request( "me/photos", "POST", attachment )
 end
 
 function loadScore()
+
 	local prevScore = score.load()
-	print('prev score: ' .. prevScore)
+
 	if prevScore ~= nil then
 		if prevScore <= mydata.score then
 			score.set(mydata.score)
@@ -42,17 +41,21 @@ function loadScore()
 			score.set(prevScore)	
 		end
 	else 
+		print('SAVING SCORE ITS : ' .. mydata.score)
 		score.set(mydata.score)	
 		score.save()
 	end
+
+	mydata.score = 0
 end
 
 function saveScore()
-	--score.save()
+	score.save()
 end
 
 function restartGame(event)
      if event.phase == "ended" then
+    	 mydata.score = 0
 		saveScore()
 		storyboard.gotoScene("stage")
      end
@@ -61,7 +64,7 @@ end
 function scene:enterScene(event)
 	storyboard.removeScene("stage")
 	--showGameOver()
-	--loadScore()
+	loadScore()
 end
 
 function scene:createScene(event)
