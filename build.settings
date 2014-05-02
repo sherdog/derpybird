@@ -1,7 +1,10 @@
 settings =
 {
     plugins = {
-      
+        ["CoronaProvider.ads.admob"] =
+        {
+            publisherId = "com.coronalabs"
+        },
     },
     iphone =
     {
@@ -30,6 +33,14 @@ settings =
             "Icon-Small.png",
             "Icon-Small@2x.png"
             }
+        },
+    },
+     android =
+    {
+        usesPermissions =
+        {
+            "android.permission.INTERNET",
+            "android.permission.ACCESS_NETWORK_STATE",
         },
     },
 }
