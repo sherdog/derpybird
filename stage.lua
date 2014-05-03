@@ -56,8 +56,8 @@ function onCollision(event)
 			scoreText.text = mydata.score
 		end
 		if((event.object2.id == 'walltop' or event.object2.id == 'wallbottom') and event.object1.id == 'dummy') then
-			mydata.lives = mydata.lives - 1
-			renderHearts()
+			removeHeart()
+			print('object2 has: ' .. #event.object2)
 		end
 	end
 	return true
@@ -311,8 +311,7 @@ function flyUp(event)
 			 gameStarted = true
 			 dummyBird:applyForce( 0, -190, dummyBird.x, dummyBird.y)
 		else 
-       	    dummyBird:applyLinearImpulse(0, -10, dummyBird.x, dummyBird.y)
-
+       	    dummyBird:applyForce(0, -300, dummyBird.x, dummyBird.y)
       end
 	end
 end
@@ -346,7 +345,7 @@ function addHoops()
 	wallTop.anchorX = 0
 	wallTop.anchorY = 1
 	wallTop.id = 'walltop'
-	wallTop.alpha =0
+	wallTop.alpha =1
 	physics.addBody(wallTop, "static", { density=0, bounce=0.1, friction=0, isSensor=true})
 
 	wallsTop:insert(wallTop)
@@ -356,7 +355,7 @@ function addHoops()
 	wallBottom.anchorX = 0
 	wallBottom.anchorY = 0
 	wallBottom.id = 'wallbottom'
-	wallBottom.alpha = 0
+	wallBottom.alpha = 1
 	physics.addBody(wallBottom, "static", { density=0, bounce=0.1, friction=0, isSensor=true})
 	wallsBottom:insert(wallBottom)
 
@@ -386,7 +385,8 @@ function addCoins(x,y)
 end
 
 function removeHeart()
-	if(mydata.lives == 0) then
+	print('LIVES: ' .. mydata.lives)
+	if(mydata.lives < 1) then
 		--doh last life.. it's game over!
 		gameOver()
 	else
@@ -396,8 +396,6 @@ function removeHeart()
 end
 
 function moveHoops()
-
-	print('NUM CHILDRES: ' .. elements.numChildren)
 
 	for b = elements.numChildren,1,-1 do
 		
@@ -416,11 +414,13 @@ function moveHoops()
 			elementsTop[b].x = elements[b].x + elements[b].width
 			elementsTop[b].y = elements[b].y
 
-			wallsTop[b].x, wallsTop[b].y = elements[b].x + (elements[b].width/2), elements[b].y - (elements[b].height / 2) - 25
+			
 
-			wallsBottom[b].x = elements[b].x + (elements[b].width / 2) 
-			wallsBottom[b].y = elements[b].y + (elements[b].height / 2) + 25
-
+			if wallsBottom[b] ~= nil and wallsTop[b] ~= nil then
+				wallsTop[b].x, wallsTop[b].y = elements[b].x + (elements[b].width/2), elements[b].y - (elements[b].height / 2) - 25
+				wallsBottom[b].x = elements[b].x + (elements[b].width / 2) 
+				wallsBottom[b].y = elements[b].y + (elements[b].height / 2) + 25
+			end
 		--	hitBoxTop[b].x, hitBoxTop[b].y = (elements[b].x + (hitBoxTop[b].width / 2) -5 ), elements[b].y - (elements[b].height / 2) + 22
 
 		else

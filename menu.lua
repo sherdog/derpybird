@@ -21,12 +21,6 @@ local appID = "ca-app-pub-5768613602851956/4347327680"
 
 local ads = require "ads"
 
--- Create a text object to display ad status
-local statusText = display.newText( "", 0, 0, native.systemFontBold, 12 )
-statusText:setTextColor( 255 )
-statusText.anchorX =  1
-statusText.x, statusText.y = 0, 160
-
 local showAd
 
 -- Called immediately after scene has moved onscreen:
@@ -45,22 +39,19 @@ function scene:createScene( event )
 
 
 	-- Shows a specific type of ad
-	showAd = function( adType )
-	local adX, adY = display.screenOriginX, display.screenOriginY
-		statusText.text = ""
-		ads.show( adType, { x=adX, y=adY } )
+	showAd = function( adType, isTest )
+		local adX, adY = display.screenOriginX, (display.contentHeight - 50)
+		ads.show( adType, { x=adX, y=adY, testMode=isTest } )
 	end
 
 	-- if on simulator, let user know they must build for device
 	if sysEnv == "simulator" then
-	local font, size = native.systemFontBold, 22
-	local warningText = display.newRetinaText( "Please build for device or Xcode simulator to test this sample.", 0, 0, 290, 300, font, size )
-	warningText:setTextColor( 255 )
-	warningText.anchorX = 0
-	warningText.x, warningText.y = display.contentWidth * 0.5, display.contentHeight * 0.5
+		showAd( "interstitial", true )
 	else
+	
 	-- start with banner ad
-	showAd( "interstitial" )
+		showAd( "interstitial", false )
+	
 	end
   
 	background = display.newImage( myImageSheet , sheetInfo:getFrameIndex("background_blue_green"))
@@ -201,15 +192,7 @@ local function adListener( event )
 	print("Message received from the ads library: ", msg)
 
 	if event.isError then
-		statusText:setTextColor( 255, 0, 0 )
-		statusText.text = "Error Loading Ad"
-		statusText.x = display.contentWidth * 0.5
-
 		showAd( "banner" )
-	else
-		statusText:setTextColor( 0, 255, 0 )
-		statusText.text = "Successfully Loaded Ad"
-		statusText.x = display.contentWidth * 0.5
 	end
 end
 
