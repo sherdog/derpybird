@@ -78,7 +78,7 @@ function facebookListener( event )
             	else
             		scoreString = 'points'
             	end
-    			
+
     			--screenCap = display.captureBounds(true)
     			screenCap = display.captureScreen(false )
 
@@ -186,13 +186,6 @@ function scene:createScene(event)
 	scoreBox.anchorY = 0
 	group:insert(scoreBox)
 
-	gameOverTitle = display.newImage(myImageSheet, sheetInfo:getFrameIndex("game_over_title"))
-	gameOverTitle.x = scoreBox.x + ((scoreBox.width / 2) - (gameOverTitle.width / 2))
-	gameOverTitle.y = scoreBox.y + 20
-	gameOverTitle.anchorX = 0
-	gameOverTitle.anchorY = 0
-	group:insert(gameOverTitle)
-
 	--Create HUD
 	-- Lives & Coins
 
@@ -207,19 +200,20 @@ function scene:createScene(event)
 	}
 
 	buttonRestart.x = display.contentWidth/2
-	buttonRestart.y = display.contentHeight/2
+	buttonRestart.y = display.contentHeight/2 + 50
 	buttonRestart.anchorX = 0.5
 	buttonRestart.anchorY = 0
 
 	group:insert(buttonRestart)
 
 	local fbButton = widget.newButton({
-	    label = "Facebook",
+	    sheet = myImageSheet,
+	    defaultFrame = 25,
 	    onEvent = doFacebook
 	})
 
 	fbButton.x = display.contentCenterX
-	fbButton.y = display.contentCenterY + 80
+	fbButton.y = buttonRestart.y + 70
 
 	group:insert(fbButton)
 
@@ -228,7 +222,7 @@ function scene:createScene(event)
 
 	coinIcon = display.newImage(myImageSheet, sheetInfo:getFrameIndex("ring_small"))
 	coinIcon.x = scoreBox.x + 90
-	coinIcon.y = scoreBox.y + 120
+	coinIcon.y = scoreBox.y + 180
 	group:insert(coinIcon)
 
 	xText = display.newText( "X",(coinIcon.x + coinIcon.width) + 15, coinIcon.y, native.systemFontBold,  30 )

@@ -1,7 +1,7 @@
 --
 -- created with TexturePacker (http://www.codeandweb.com/texturepacker)
 --
--- $TexturePacker:SmartUpdate:29ed69a99d9d918679ec51370c988cdd:2aadd158bcb0bbaa5ce6be406772250d:f5c322b4188998d6cd973301e8657e5f$
+-- $TexturePacker:SmartUpdate:da9c1ccb48c274581e008c317b8032c2:6943284feb3b136906015070f95e7423:f5c322b4188998d6cd973301e8657e5f$
 --
 -- local sheetInfo = require("mysheet")
 -- local myImageSheet = graphics.newImageSheet( "mysheet.png", sheetInfo:getSheet() )
@@ -24,24 +24,24 @@ SheetInfo.sheet =
         },
         {
             -- bird_1
-            x=584,
-            y=605,
+            x=738,
+            y=690,
             width=127,
             height=62,
 
         },
         {
             -- bird_2
-            x=584,
-            y=541,
+            x=609,
+            y=953,
             width=127,
             height=62,
 
         },
         {
             -- bird_green
-            x=544,
-            y=936,
+            x=657,
+            y=855,
             width=71,
             height=38,
 
@@ -96,72 +96,72 @@ SheetInfo.sheet =
         },
         {
             -- button_about-over
-            x=584,
-            y=822,
+            x=738,
+            y=985,
             width=98,
             height=26,
 
         },
         {
             -- button_about
-            x=584,
-            y=735,
+            x=877,
+            y=668,
             width=100,
             height=29,
 
         },
         {
             -- button_back-over
-            x=584,
-            y=794,
+            x=738,
+            y=957,
             width=98,
             height=26,
 
         },
         {
             -- button_back
-            x=719,
-            y=936,
+            x=877,
+            y=637,
             width=100,
             height=29,
 
         },
         {
             -- button_restart
-            x=638,
-            y=967,
+            x=877,
+            y=606,
             width=100,
             height=29,
 
         },
         {
             -- button_restart_over
-            x=584,
-            y=766,
+            x=867,
+            y=727,
             width=98,
             height=26,
 
         },
         {
             -- button_start-over
-            x=707,
-            y=908,
+            x=867,
+            y=699,
             width=98,
             height=26,
 
         },
         {
             -- button_start
-            x=617,
-            y=936,
+            x=884,
+            y=575,
             width=100,
             height=29,
 
         },
         {
             -- cloud_large
-            x=544,
-            y=868,
+            x=324,
+            y=953,
             width=161,
             height=66,
 
@@ -176,8 +176,8 @@ SheetInfo.sheet =
         },
         {
             -- coin
-            x=589,
-            y=976,
+            x=884,
+            y=541,
             width=23,
             height=32,
 
@@ -192,24 +192,24 @@ SheetInfo.sheet =
         },
         {
             -- coin_brown
-            x=614,
-            y=976,
+            x=979,
+            y=606,
             width=22,
             height=32,
 
         },
         {
             -- derpy_bird_logo
-            x=324,
-            y=868,
+            x=657,
+            y=581,
             width=218,
             height=107,
 
         },
         {
             -- facebook_share_button
-            x=719,
-            y=713,
+            x=738,
+            y=927,
             width=187,
             height=28,
 
@@ -218,14 +218,14 @@ SheetInfo.sheet =
             -- game_over_box
             x=324,
             y=561,
-            width=258,
-            height=305,
+            width=331,
+            height=390,
 
         },
         {
             -- game_over_title
-            x=324,
-            y=977,
+            x=657,
+            y=541,
             width=225,
             height=38,
 
@@ -240,24 +240,24 @@ SheetInfo.sheet =
         },
         {
             -- heart_empty
-            x=983,
-            y=583,
+            x=979,
+            y=662,
             width=19,
             height=20,
 
         },
         {
             -- heart_full
-            x=983,
-            y=561,
+            x=979,
+            y=640,
             width=19,
             height=20,
 
         },
         {
             -- instructions
-            x=719,
-            y=541,
+            x=732,
+            y=755,
             width=187,
             height=170,
 
@@ -272,48 +272,48 @@ SheetInfo.sheet =
         },
         {
             -- ring
-            x=908,
-            y=561,
+            x=657,
+            y=690,
             width=73,
             height=163,
 
         },
         {
             -- ring_back
-            x=749,
-            y=743,
+            x=967,
+            y=721,
             width=34,
             height=163,
 
         },
         {
             -- ring_brown
-            x=570,
-            y=976,
+            x=657,
+            y=895,
             width=17,
             height=35,
 
         },
         {
             -- ring_front
-            x=707,
-            y=743,
+            x=921,
+            y=755,
             width=40,
             height=163,
 
         },
         {
             -- ring_small
-            x=551,
-            y=976,
+            x=979,
+            y=684,
             width=17,
             height=35,
 
         },
         {
             -- start_bird
-            x=584,
-            y=669,
+            x=487,
+            y=953,
             width=120,
             height=64,
 

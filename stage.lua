@@ -25,8 +25,6 @@ local g = graphics.newGradient(
 	  { 211, 255, 192 },
 	  { 0, 111, 225 },
 	  "down" )
-
-local elements
 local coinGroup
 
 local gameStarted = false
@@ -37,27 +35,20 @@ function onCollision(event)
 		if(event.object1.id == 'ground' or event.object1.id == 'ground2') then
 			gameOver()
 		end
-
-		print('1: ' .. event.object1.id .. ' and 2: ' .. event.object2.id)
-	end
-	print(event.object1.id .. event.object2.id)
-	if(event.object1.id == 'dummy' and event.object2.id == 'hoopTopRT') then
-
 	end
 
 	if(event.phase == 'ended') then
-	print('obj2 = ' .. event.object1.id)
 		--print('object was ' .. event.object2.id)
-		if(event.object2.id == 'hoop' and event.object1.id == 'dummy' ) then
-			print("SHOULD TKAE SCORE DOWNNNN")
+		if(event.object2.id == 'hoop' and event.object1.id == 'dummy' and event.object2.touched == false ) then
 			event.object2.touched = true
 			event.object1.touched = true
 			mydata.score = mydata.score + 1
 			scoreText.text = mydata.score
 		end
-		if((event.object2.id == 'walltop' or event.object2.id == 'wallbottom') and event.object1.id == 'dummy') then
+
+		if(( (event.object2.id == 'walltop' and event.object2.touched == false)  or (event.object2.id == 'wallbottom' and event.object2.touched == false)) and event.object1.id == 'dummy' and event.object2.touched == false) then
 			removeHeart()
-			print('object2 has: ' .. #event.object2)
+			event.object2.touched = true
 		end
 	end
 	return true
@@ -65,6 +56,8 @@ end
 
 function scene:enterScene( event )
 	local group = self.view
+
+	print('ele: ' .. #elements)
 	storyboard.removeScene("menu")
     memTimer = timer.performWithDelay( 1000, checkMemory, 0 )
     print('enter scene called')
@@ -283,7 +276,6 @@ function renderHearts()
 	local initHeartX = display.contentWidth - 20
 
 	for i=0, 2, 1 do
-		print('mydata.lives is: ' .. mydata.lives .. 'and i is: ' .. i)
 		if(mydata.lives >= i) then
 			heart[i] = display.newImage(myImageSheet, sheetInfo:getFrameIndex("heart_full"))
 		else
@@ -306,8 +298,26 @@ function flyUp(event)
 			 --tb.alpha = 1
 			 scoreText.alpha = 1
 			 hud.alpha = 1
-			 addHoopTimer = timer.performWithDelay(math.random(2000, math.random(4000, 5000)), addHoops, -1)
+			 
+			 if(mydata.score >= 0 and mydata.score < 10 ) then
+			 	timerMin = 2000
+			 	timerMax = math.random(4000,5000)
+			 elseif(mydata.score >= 10 and mydata.score < 30) then
+			 	timerMin = 1500
+			 	timerMax = math.random(3000,4000)
+			 elseif(mydata.score >= 30 and mydata.score < 100) then
+			 	timerMin = 1000
+			 	timerMax = math.random(2000,3000)
+			 else
+			 	timerMin = 500
+			 	timerMax = math.random(1000,3000)
+			 end
+			 print('timerMin: ' .. timerMin)
+			 print('timerMax: ' .. timerMax)
+			 addHoopTimer = timer.performWithDelay(math.random(timerMin, timerMax), addHoops, -1)
 			 moveHoopTimer = timer.performWithDelay(90, moveHoops, -1)
+
+
 			 gameStarted = true
 			 dummyBird:applyForce( 0, -190, dummyBird.x, dummyBird.y)
 		else 
@@ -345,6 +355,7 @@ function addHoops()
 	wallTop.anchorX = 0
 	wallTop.anchorY = 1
 	wallTop.id = 'walltop'
+	wallTop.touched = false
 	wallTop.alpha =1
 	physics.addBody(wallTop, "static", { density=0, bounce=0.1, friction=0, isSensor=true})
 
@@ -355,6 +366,7 @@ function addHoops()
 	wallBottom.anchorX = 0
 	wallBottom.anchorY = 0
 	wallBottom.id = 'wallbottom'
+	wallBottom.touched = false
 	wallBottom.alpha = 1
 	physics.addBody(wallBottom, "static", { density=0, bounce=0.1, friction=0, isSensor=true})
 	wallsBottom:insert(wallBottom)
@@ -375,7 +387,7 @@ function addHoops()
 	end
 
 	hoopCount = hoopCount + 1
-
+	print('ADDED 1 HOOP')
 end
 
 function addCoins(x,y)
@@ -429,6 +441,12 @@ function moveHoops()
 			wallsTop:remove(wallsTop[b])
 			wallsBottom:remove(wallsBottom[b])
 			hitBoxTop:remove(hitBoxTop[b])
+
+			elements[b] = nil
+			elementsTop[b] = nil
+			wallsTop[b] = nil
+			wallBottom[b] = nil
+			hitBoxTop[b] = nil
 
 		end	
 	end
@@ -508,16 +526,23 @@ function enterFrame(event)
 end
 
 function scene:exitScene(event)
-
+	local group = self.view
+	
 	Runtime:removeEventListener("touch", flyUp)
 	Runtime:removeEventListener("enterFrame", enterFrame)
+	print('exit scene called')
+	print('elemt: ' .. #elements)
+	elements:removeSelf()
 	timer.cancel(addHoopTimer)
 	timer.cancel(moveHoopTimer)
 
 end
 
 function scene:destroyScene(event)
-
+	local group = self.view
+	print('elemt: ' .. #elements)
+	print('destroy scene called')
+	elements:removeSelf()
 end
 
 -----------------------------------------------------------------------------------------
