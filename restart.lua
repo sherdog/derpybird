@@ -94,7 +94,7 @@ function facebookListener( event )
             	attachment = {
             		
 
-			       	message = "I scored " .. scoreString .. " points playing Derpy Bird! Think you can beat me?",
+			       	message = "I scored " .. mydata.score .. ' ' .. scoreString .. " playing Derpy Bird! Think you can beat me?",
 			        source = 
 			        { 
 				        baseDir = system.DocumentsDirectory, 
@@ -147,8 +147,6 @@ function loadScore()
 		score.set(mydata.score)	
 		score.save()
 	end
-
-	mydata.score = 0
 end
 
 function saveScore()
@@ -157,7 +155,6 @@ end
 
 function restartGame(event)
      if event.phase == "ended" then
-    	 mydata.score = 0
 		saveScore()
 		storyboard.gotoScene("stage")
      end

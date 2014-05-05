@@ -356,7 +356,7 @@ function addHoops()
 	wallTop.anchorY = 1
 	wallTop.id = 'walltop'
 	wallTop.touched = false
-	wallTop.alpha =1
+	wallTop.alpha = 0
 	physics.addBody(wallTop, "static", { density=0, bounce=0.1, friction=0, isSensor=true})
 
 	wallsTop:insert(wallTop)
@@ -367,7 +367,7 @@ function addHoops()
 	wallBottom.anchorY = 0
 	wallBottom.id = 'wallbottom'
 	wallBottom.touched = false
-	wallBottom.alpha = 1
+	wallBottom.alpha = 0
 	physics.addBody(wallBottom, "static", { density=0, bounce=0.1, friction=0, isSensor=true})
 	wallsBottom:insert(wallBottom)
 
