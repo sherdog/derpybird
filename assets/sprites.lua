@@ -1,7 +1,7 @@
 --
 -- created with TexturePacker (http://www.codeandweb.com/texturepacker)
 --
--- $TexturePacker:SmartUpdate:85a5d3194d85bd7398cafc0a11980061:7f9300abe81ee0a62e1bca406055224b:f5c322b4188998d6cd973301e8657e5f$
+-- $TexturePacker:SmartUpdate:29ed69a99d9d918679ec51370c988cdd:2aadd158bcb0bbaa5ce6be406772250d:f5c322b4188998d6cd973301e8657e5f$
 --
 -- local sheetInfo = require("mysheet")
 -- local myImageSheet = graphics.newImageSheet( "mysheet.png", sheetInfo:getSheet() )
@@ -97,15 +97,15 @@ SheetInfo.sheet =
         {
             -- button_about-over
             x=584,
-            y=819,
+            y=822,
             width=98,
             height=26,
 
         },
         {
             -- button_about
-            x=719,
-            y=922,
+            x=584,
+            y=735,
             width=100,
             height=29,
 
@@ -113,15 +113,15 @@ SheetInfo.sheet =
         {
             -- button_back-over
             x=584,
-            y=791,
+            y=794,
             width=98,
             height=26,
 
         },
         {
             -- button_back
-            x=707,
-            y=891,
+            x=719,
+            y=936,
             width=100,
             height=29,
 
@@ -137,15 +137,15 @@ SheetInfo.sheet =
         {
             -- button_restart_over
             x=584,
-            y=763,
+            y=766,
             width=98,
             height=26,
 
         },
         {
             -- button_start-over
-            x=584,
-            y=735,
+            x=707,
+            y=908,
             width=98,
             height=26,
 
@@ -204,6 +204,14 @@ SheetInfo.sheet =
             y=868,
             width=218,
             height=107,
+
+        },
+        {
+            -- facebook_share_button
+            x=719,
+            y=713,
+            width=187,
+            height=28,
 
         },
         {
@@ -273,7 +281,7 @@ SheetInfo.sheet =
         {
             -- ring_back
             x=749,
-            y=726,
+            y=743,
             width=34,
             height=163,
 
@@ -289,7 +297,7 @@ SheetInfo.sheet =
         {
             -- ring_front
             x=707,
-            y=726,
+            y=743,
             width=40,
             height=163,
 
@@ -351,20 +359,21 @@ SheetInfo.frameIndex =
     ["coin32"] = 22,
     ["coin_brown"] = 23,
     ["derpy_bird_logo"] = 24,
-    ["game_over_box"] = 25,
-    ["game_over_title"] = 26,
-    ["ground"] = 27,
-    ["heart_empty"] = 28,
-    ["heart_full"] = 29,
-    ["instructions"] = 30,
-    ["mountains"] = 31,
-    ["ring"] = 32,
-    ["ring_back"] = 33,
-    ["ring_brown"] = 34,
-    ["ring_front"] = 35,
-    ["ring_small"] = 36,
-    ["start_bird"] = 37,
-    ["trees"] = 38,
+    ["facebook_share_button"] = 25,
+    ["game_over_box"] = 26,
+    ["game_over_title"] = 27,
+    ["ground"] = 28,
+    ["heart_empty"] = 29,
+    ["heart_full"] = 30,
+    ["instructions"] = 31,
+    ["mountains"] = 32,
+    ["ring"] = 33,
+    ["ring_back"] = 34,
+    ["ring_brown"] = 35,
+    ["ring_front"] = 36,
+    ["ring_small"] = 37,
+    ["start_bird"] = 38,
+    ["trees"] = 39,
 }
 
 function SheetInfo:getSheet()

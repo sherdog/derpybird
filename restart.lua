@@ -73,6 +73,12 @@ function facebookListener( event )
             	}
             	local screenShotName = "derpyBirdscore_" .. highscore .. '.png'
     			
+            	if(highscore == 1) then
+            		scoreString = 'point'
+            	else
+            		scoreString = 'points'
+            	end
+    			
     			--screenCap = display.captureBounds(true)
     			screenCap = display.captureScreen(false )
 
@@ -86,7 +92,9 @@ function facebookListener( event )
     			screenCap:removeSelf()
 
             	attachment = {
-			       	message = "I scored " .. highscore .. " points playing Derpy Bird! Think you can beat me?",
+            		
+
+			       	message = "I scored " .. scoreString .. " points playing Derpy Bird! Think you can beat me?",
 			        source = 
 			        { 
 				        baseDir = system.DocumentsDirectory, 
