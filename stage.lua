@@ -67,7 +67,7 @@ function scene:enterScene( event )
 	local group = self.view
 	storyboard.removeScene("menu")
     memTimer = timer.performWithDelay( 1000, checkMemory, 0 )
-
+    print('enter scene called')
 
 end
 
