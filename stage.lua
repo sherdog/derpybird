@@ -19,7 +19,7 @@ local layerOneSpeed = 2
 local layerTwoSpeed = .6
 local layerThreeSpeed = .3
 
-local ground2, background, ground, rect, trees, trees2, mtn, mtn2, cloud1, cloud2, instructions, flyingBird,flyingBird, hoop, wallTop, wallBottom
+local ground2, background, ground, rect, trees, trees2, mtn, mtn2, cloud1, cloud2, instructions, flyingBird, hoop, wallTop, wallBottom, sign
 
 local g = graphics.newGradient(
 	  { 211, 255, 192 },
@@ -70,7 +70,9 @@ end
 
 function scene:createScene( event )
 	local group = self.view
-	 mydata.score = 0
+	
+	mydata.score = 0
+
 	background = display.newImage( myImageSheet , sheetInfo:getFrameIndex("background_blue_green"))
 	background.x = 0
 	background.y = 0
@@ -127,10 +129,10 @@ function scene:createScene( event )
 	ground.y = display.contentHeight
 	ground.anchorX = 0
 	ground.anchorY = 1
+
 	physics.addBody(ground, "static", {density=.1, bounce=0.1, friction=1})
 	ground.id = "ground"
 	group:insert(ground)
-
 
 	ground2 = display.newImage( myImageSheet , sheetInfo:getFrameIndex("ground"))
 	ground2:translate(ground.width, display.contentHeight)
@@ -138,6 +140,7 @@ function scene:createScene( event )
 	ground2.anchorX = 0
 	ground2.anchorY = 1
 	ground2.id ="ground2"
+
 	physics.addBody(ground2, "static", {density=.1, bounce=0.1, friction=1})
 	group:insert(ground2)
 
@@ -149,7 +152,6 @@ function scene:createScene( event )
 
 	group:insert(instructions)
 
-
 	elements = display.newGroup()
 	elements.anchorX = 0
 	elements.anchorY = 1
@@ -159,11 +161,11 @@ function scene:createScene( event )
 	
 	dummyBird = display.newRect( (display.contentWidth/2) - 80 , display.contentHeight/2, 50, 30 )
 	dummyBird:setFillColor( 0.5 )
+
 	dummyBird.anchorX = 0.5
 	dummyBird.anchorY = 0
 	dummyBird.id = 'dummy'
-	dummyBird.alpha = 0
-	dummyBird.isFixedRotation = true
+	dummyBird.alpha = 1
 
 	group:insert(dummyBird)
 
@@ -269,8 +271,12 @@ function scene:createScene( event )
 	coinIcon.x = 15
 	coinIcon.y = 20
 
+	hud:insert(coinIcon)
+
 	renderHearts()
 
+	
+	
 end
 
 function renderHearts()
@@ -289,8 +295,6 @@ function renderHearts()
 		heart[i].y = 20
 		hud:insert(heart[i])
 	end
-
-	hud:insert(coinIcon)
 end
 
 function flyUp(event)
@@ -316,11 +320,12 @@ function flyUp(event)
 			 	timerMin = 500
 			 	timerMax = math.random(1000,3000)
 			 end
+
 			 print('timerMin: ' .. timerMin)
 			 print('timerMax: ' .. timerMax)
+			 
 			 addHoopTimer = timer.performWithDelay(math.random(timerMin, timerMax), addHoops, -1)
 			 moveHoopTimer = timer.performWithDelay(90, moveHoops, -1)
-
 
 			 gameStarted = true
 			 dummyBird:applyForce( 0, -190, dummyBird.x, dummyBird.y)
@@ -329,6 +334,8 @@ function flyUp(event)
       end
 	end
 end
+
+
 
 function gameOver()
 	storyboard.gotoScene("restart")	
@@ -391,7 +398,6 @@ function addHoops()
 	end
 
 	hoopCount = hoopCount + 1
-	print('ADDED 1 HOOP')
 end
 
 function addCoins(x,y)
@@ -401,13 +407,14 @@ function addCoins(x,y)
 end
 
 function removeHeart()
-	print('LIVES: ' .. mydata.lives)
-	if(mydata.lives < 1) then
+	
+	mydata.lives = mydata.lives - 1
+	renderHearts()
+
+	print('lives is: ' .. mydata.lives)
+	if(mydata.lives  < 0) then
 		--doh last life.. it's game over!
 		gameOver()
-	else
-		mydata.lives = mydata.lives - 1
-		renderHearts()
 	end
 end
 
@@ -511,11 +518,12 @@ local prevY = 0
 function enterFrame(event)
 	--if bird y is less than -200.. let's cap it at 200
 	scrollBackground()
+
 	flyingBird.x = dummyBird.x
 	flyingBird.y = dummyBird.y
 
-	if(dummyBird.y < -700) then
-		gameOver()
+	if(dummyBird.y < -200) then
+		dummyBird.y = -200
 	end
 	
 	if(flyingBird.y > prevY) then

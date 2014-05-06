@@ -10,10 +10,14 @@ local widget = require("widget")
 local facebook = require( "facebook" )
 local json = require("json")
 
-local screenCap
+local screenCap, sign, fbButton
 
 local facebookAppID = "1482803695265952"
 local FB_Command = nil
+
+local layerOneSpeed = 2
+local layerTwoSpeed = .6
+local layerThreeSpeed = .3
 
 function print_r ( t )
     local print_r_cache={}
@@ -160,71 +164,228 @@ end
 function scene:createScene(event)
 	local group = self.view
 
-	background = display.newImage( myImageSheet , sheetInfo:getFrameIndex("background_blue_green"))
-	background.x = 0
-	background.y = 0
-	background.anchorX = 0
-	background.anchorY = 0
-	group:insert(background)
+    background = display.newImage( myImageSheet , sheetInfo:getFrameIndex("background_blue_green"))
+    background.x = 0
+    background.y = 0
+    background.anchorX = 0
+    background.anchorY = 0
+    group:insert(background)
 
-	scoreBox = display.newImage(myImageSheet, sheetInfo:getFrameIndex("game_over_box"))
-	scoreBox.x = (display.contentWidth / 2) - (scoreBox.width / 2)
-	scoreBox.y = (display.contentHeight / 2) - (scoreBox.height / 2)
-	scoreBox.anchorX = 0
-	scoreBox.anchorY = 0
-	group:insert(scoreBox)
+    mtn = display.newImage(myImageSheet, sheetInfo:getFrameIndex("mountains"))
+    mtn.x = 0
+    mtn.y = display.contentHeight
+    mtn.anchorX = 0
+    mtn.anchorY = 1
+    mtn.alpha = 0.3
+    group:insert(mtn)
 
-	--Create HUD
-	-- Lives & Coins
+    mtn2 = display.newImage(myImageSheet, sheetInfo:getFrameIndex("mountains"))
+    mtn2.x = (mtn.x + mtn.width) - 2
+    mtn2.y = display.contentHeight
+    mtn2.anchorX = 0
+    mtn2.anchorY = 1
+    mtn2.alpha = 0.3
+    group:insert(mtn2)
 
-	buttonRestart = widget.newButton
-	{
-		top = 0,
-		left = 0,
-		sheet = myImageSheet,
-		defaultFrame = 15,
-		overFrame = 16,
-		onEvent = restartGame
-	}
+    cloud1 = display.newImage(myImageSheet, sheetInfo:getFrameIndex("cloud_large"))
+    cloud1.x = display.contentWidth + 50
+    cloud1.y = math.random(50, 150)
+    cloud1.anchorX = 0
+    cloud1.anchorY = 0
+    group:insert(cloud1)
 
-	buttonRestart.x = display.contentWidth/2
-	buttonRestart.y = display.contentHeight/2 + 50
-	buttonRestart.anchorX = 0.5
-	buttonRestart.anchorY = 0
+    cloud2 = display.newImage(myImageSheet, sheetInfo:getFrameIndex("cloud_small"))
+    cloud2.x = (display.contentWidth * 2) + 50
+    cloud2.y = math.random(50,150)
+    cloud2.anchorX = 0
+    cloud2.anchorY = 0
+    group:insert(cloud2)
 
-	group:insert(buttonRestart)
+    trees = display.newImage( myImageSheet, sheetInfo:getFrameIndex('trees'))
+    trees.x = 0
+    trees.y = display.contentHeight - 70
+    trees.anchorX = 0
+    trees.anchorY = 1
+    group:insert(trees)
 
-	local fbButton = widget.newButton({
-	    sheet = myImageSheet,
-	    defaultFrame = 25,
-	    onEvent = doFacebook
-	})
+    trees2 = display.newImage( myImageSheet, sheetInfo:getFrameIndex('trees'))
+    trees2.x = (trees.x + trees.width) + 50
+    trees2.y = display.contentHeight - 70
+    trees2.anchorX = 0
+    trees2.anchorY = 1
+    group:insert(trees2)
 
-	fbButton.x = display.contentCenterX
-	fbButton.y = buttonRestart.y + 70
+    ground = display.newImage( myImageSheet , sheetInfo:getFrameIndex("ground"))
+    ground:translate(0, display.contentHeight)
+    ground.y = display.contentHeight
+    ground.anchorX = 0
+    ground.anchorY = 1
 
-	group:insert(fbButton)
+    physics.addBody(ground, "static", {density=.1, bounce=0.1, friction=1})
+    ground.id = "ground"
+    group:insert(ground)
 
-	facebook.login( facebookAppID, facebookListener )
-    print("Score is: " .. mydata.score)
-	coinIcon = display.newImage(myImageSheet, sheetInfo:getFrameIndex("ring_small"))
-	coinIcon.x = scoreBox.x + 90
-	coinIcon.y = scoreBox.y + 180
-	group:insert(coinIcon)
+    ground2 = display.newImage( myImageSheet , sheetInfo:getFrameIndex("ground"))
+    ground2:translate(ground.width, display.contentHeight)
+    ground2.y = display.contentHeight
+    ground2.anchorX = 0
+    ground2.anchorY = 1
+    ground2.id ="ground2"
 
-	xText = display.newText( "X",(coinIcon.x + coinIcon.width) + 15, coinIcon.y, native.systemFontBold,  30 )
-	xText:setFillColor( 0,0,0 )
-	xText.alpha = 1
-	group:insert(xText)
+    physics.addBody(ground2, "static", {density=.1, bounce=0.1, friction=1})
+    group:insert(ground2)
 
-	coinText = display.newText( mydata.score, (coinIcon.x + coinIcon.width) + 50, coinIcon.y, "8-Bit Madness", 60)
-	coinText:setFillColor( 0,0,0 )
-	coinText.alpha = 1
-	group:insert(coinText)
+	--Game Over Stuffs
+    sign = display.newImage(myImageSheet, sheetInfo:getFrameIndex("game_over_slide"))
+    sign.x = display.contentCenterX  - (sign.width / 2)
+    sign.y = -sign.height
+    sign.anchorX = 0
+    sign.anchorY = 0
+    
+    group:insert(sign)
+
+    currentScoreTitle = display.newText("Score", 80, 150, "8-Bit Madness", 30)
+    currentScoreTitle:setFillColor( 0,0,0 )
+    currentScoreTitle.alpha = 0
+    
+    group:insert(currentScoreTitle)
+
+    currentScore = display.newText("0", currentScoreTitle.x, currentScoreTitle.y+40, "8-Bit Madness", 50)
+    currentScore:setFillColor(0,0,0 )
+    currentScore.alpha = 0
+
+    group:insert(currentScore)
+
+    bestScoreTitle = display.newText("Best", currentScoreTitle.x + 165, currentScoreTitle.y, "8-Bit Madness", 30)
+    bestScoreTitle:setFillColor( 0,0,0 )
+    bestScoreTitle.alpha = 0
+    
+    group:insert(bestScoreTitle)
+
+    bestScore = display.newText("0", bestScoreTitle.x, bestScoreTitle.y + 40, "8-Bit Madness", 50)
+    bestScore:setFillColor( 0,0,0 )
+    bestScore.alpha = 0
+
+    group:insert(bestScore)
+
+    transition.to(sign, {time=400, y=0, onComplete=function(sign)
+        timer.performWithDelay( 200, onScoreBoardCompleteListener )
+    end })
+
+
+    --Create HUD
+    -- Lives & Coins
+
+    buttonRestart = widget.newButton
+    {
+        top = 0,
+        left = 0,
+        sheet = myImageSheet,
+        defaultFrame = 34,
+        onEvent = restartGame
+    }
+
+   
+    buttonRestart.anchorX = 0.5
+    buttonRestart.anchorY = 0
+    buttonRestart.alpha = 0
+
+    group:insert(buttonRestart)
+
+   fbButton = widget.newButton({
+        sheet = myImageSheet,
+        defaultFrame = 40,
+        onEvent = doFacebook
+    })
+
+    fbButton.anchorX = 0.5
+    fbButton.anchorY = 0
+    fbButton.x = 0
+    fbButton.y = 0
+    fbButton.alpha = 0
+
+    group:insert(fbButton)
+
+    facebook.login( facebookAppID, facebookListener )
 
 end
 
+function onScoreBoardCompleteListener(obj)
 
+        currentScoreTitle.alpha = 1
+
+        currentScore.text = mydata.score
+        currentScore.alpha = 1
+
+        bestScoreTitle.alpha = 1
+
+        bestScore.text = score.load()
+        bestScore.alpha = 1
+
+        buttonRestart.x = sign.x + 65
+        buttonRestart.y = sign.height +  20
+
+        buttonRestart.alpha = 1
+
+        fbButton.x = sign.width - 30
+        fbButton.y = sign.height + 20
+
+        fbButton.alpha = 1
+end
+
+function scrollBackground()
+    
+    ground.x = ground.x - layerOneSpeed
+    ground2.x = ground2.x - layerOneSpeed
+
+    trees.x = trees.x - layerTwoSpeed
+    trees2.x = trees2.x - layerTwoSpeed
+
+    mtn.x = mtn.x - layerThreeSpeed
+    mtn2.x = mtn2.x - layerThreeSpeed
+
+    cloud1.x = cloud1.x - layerTwoSpeed
+    cloud2.x = cloud2.x - layerTwoSpeed  * 1.1
+
+    if( (cloud1.x + cloud1.width) < 0 ) then
+        cloud1.x = (display.contentWidth + 50)
+    end 
+
+    if(  (cloud2.x + cloud2.width) < 0 ) then
+        cloud2.x = (display.contentWidth * 2) + 50
+    end
+
+    if((ground.x + ground.width) < 0) then
+        ground.x = (ground2.x+ground2.width)
+    end
+
+    if((ground2.x + ground2.width) < 0 ) then
+        ground2.x = ground.x+ground.width
+    end
+
+    if((trees.x + trees.width) < 0) then
+        trees.x = trees2.x + trees2.width
+    end
+
+    if((trees2.x + trees2.width)  < 0 ) then
+        trees2.x =  (trees.x + trees.width) + 50
+    end
+
+    if((mtn.x + mtn.width) < 0 ) then
+        mtn.x = (mtn2.x + mtn2.width)
+    end
+
+    if((mtn2.x + mtn2.width) < 0 ) then
+        mtn2.x = (mtn.x + mtn.width) -2
+    end
+
+end
+
+function enterFrame(event)
+    --if bird y is less than -200.. let's cap it at 200
+    scrollBackground()
+
+end
 
 function scene:exitScene(event)
 	--transition.cancel(fadeTransition)
@@ -238,6 +399,8 @@ end
 scene:addEventListener("createScene", scene)
 scene:addEventListener("enterScene", scene)
 scene:addEventListener("exitScene", scene)
+
+Runtime:addEventListener( "enterFrame", enterFrame )
 scene:addEventListener("destroyScene", scene)
 
 return scene
