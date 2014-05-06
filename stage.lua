@@ -29,6 +29,12 @@ local coinGroup
 
 local gameStarted = false
 
+function checkMemory()
+   collectgarbage( "collect" )
+   local memUsage_str = string.format( "MEMORY = %.3f KB", collectgarbage( "count" ) )
+   print( memUsage_str, "TEXTURE = "..(system.getInfo("textureMemoryUsed") / (1024 * 1024) ) )
+end
+
 function onCollision(event)
 	
 	if(event.phase == 'began') then
@@ -56,11 +62,9 @@ end
 
 function scene:enterScene( event )
 	local group = self.view
-
-	print('ele: ' .. #elements)
+	storyboard.removeScene("restart")
 	storyboard.removeScene("menu")
     memTimer = timer.performWithDelay( 1000, checkMemory, 0 )
-    print('enter scene called')
 
 end
 

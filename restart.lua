@@ -50,27 +50,26 @@ function print_r ( t )
 end
 
 function facebookListener( event )
-    print_r( event )
-    print( "event.name", event.name )  --"fbconnect"
-    print( "event.type:", event.type ) --type is either "session", "request", or "dialog"
-    print( "isError: " .. tostring( event.isError ) )
-    print( "didComplete: " .. tostring( event.didComplete ) )
+  --  print_r( event )
     if ( "session" == event.type ) then
         --options are: "login", "loginFailed", "loginCancelled", or "logout"
         if ( "login" == event.phase ) then
             local access_token = event.token
+
             --code for tasks following a successful login
             print( 'Token: ' .. access_token )
             if FB_Command then
             	 
-            	 local highscore = score.load()
+            	 local highscore = mydata.score
             	 local baseDir = system.DocumentsDirectory
-            	 local screenBounds = {
+            	 
+                 local screenBounds = {
             	 	xMin = 0,
             	 	xMax = display.contentWidth,
             	 	yMin = 0,
             	 	yMax = display.contentHeight,
             	}
+
             	local screenShotName = "derpyBirdscore_" .. highscore .. '.png'
     			
             	if(highscore == 1) then
@@ -81,7 +80,6 @@ function facebookListener( event )
 
     			--screenCap = display.captureBounds(true)
     			screenCap = display.captureScreen(false )
-
     			screenCap.x = 0
     			screenCap.y = 0
     			screenCap.anchorX = 0
@@ -92,8 +90,6 @@ function facebookListener( event )
     			screenCap:removeSelf()
 
             	attachment = {
-            		
-
 			       	message = "I scored " .. mydata.score .. ' ' .. scoreString .. " playing Derpy Bird! Think you can beat me?",
 			        source = 
 			        { 
@@ -102,7 +98,6 @@ function facebookListener( event )
 				        type = "image" 
 				    }
 			    }
-
                 facebook.request( FB_Command, "POST", attachment )
 
             end
@@ -111,23 +106,19 @@ function facebookListener( event )
         print("facebook request")
         if ( not event.isError ) then
             local data = json.decode( event.response )
-            print( "data: ", data )
-            print( "event.response: ", event.response )
+            native.showAlert( "Success", "Your score has been posted!", {"OK"})
         else
-            print( "event.isError: " .. event.isError )
+            native.showAlert( "Error", "There was an error in your request", { "OK" })
         end
     end
 end
 
 function doFacebook( event )
     if event.phase == "ended" then
-    -- Fill the screen with a green rectangle
-	
         FB_Command = "me/photos"
         facebook.login( facebookAppID, facebookListener, {"publish_actions", "email" })
     end
 end
-
 
 function showStart()
 	startTransition = transition.to(restart,{time=200, alpha=1})
@@ -215,8 +206,7 @@ function scene:createScene(event)
 	group:insert(fbButton)
 
 	facebook.login( facebookAppID, facebookListener )
-	
-
+    print("Score is: " .. mydata.score)
 	coinIcon = display.newImage(myImageSheet, sheetInfo:getFrameIndex("ring_small"))
 	coinIcon.x = scoreBox.x + 90
 	coinIcon.y = scoreBox.y + 180
@@ -231,12 +221,6 @@ function scene:createScene(event)
 	coinText:setFillColor( 0,0,0 )
 	coinText.alpha = 1
 	group:insert(coinText)
-
-	
-
-	--now we group everyhing inside the box based on box x,y
-
-
 
 end
 
