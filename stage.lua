@@ -165,7 +165,7 @@ function scene:createScene( event )
 	dummyBird.anchorX = 0.5
 	dummyBird.anchorY = 0
 	dummyBird.id = 'dummy'
-	dummyBird.alpha = 1
+	dummyBird.alpha = 0
 
 	group:insert(dummyBird)
 
