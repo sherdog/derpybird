@@ -336,7 +336,7 @@ function flyUp(event)
 	 		 
 		else 
 
-       	    dummyBird:applyForce(0, -300, dummyBird.x, dummyBird.y)
+       	    dummyBird:applyForce(0, -350, dummyBird.x, dummyBird.y)
       end
 	end
 end
