@@ -64,7 +64,7 @@ function scene:enterScene( event )
 	local group = self.view
 	storyboard.removeScene("restart")
 	storyboard.removeScene("menu")
-    memTimer = timer.performWithDelay( 1000, checkMemory, 0 )
+   -- memTimer = timer.performWithDelay( 1000, checkMemory, 0 )
 
 end
 
@@ -244,8 +244,6 @@ function scene:createScene( event )
 
 	group:insert(scoreText)
 
-	
-
 	--Create HUD
 	-- Lives & Coins
 
@@ -275,8 +273,6 @@ function scene:createScene( event )
 
 	renderHearts()
 
-	
-	
 end
 
 function renderHearts()
@@ -321,9 +317,6 @@ function flyUp(event)
 			 	timerMax = math.random(1000,3000)
 			 end
 
-			 print('timerMin: ' .. timerMin)
-			 print('timerMax: ' .. timerMax)
-			 
 			 addHoopTimer = timer.performWithDelay(math.random(timerMin, timerMax), addHoops, -1)
 			 moveHoopTimer = timer.performWithDelay(90, moveHoops, -1)
 
@@ -334,8 +327,6 @@ function flyUp(event)
       end
 	end
 end
-
-
 
 function gameOver()
 	storyboard.gotoScene("restart")	
@@ -368,8 +359,8 @@ function addHoops()
 	wallTop.id = 'walltop'
 	wallTop.touched = false
 	wallTop.alpha = 0
-	physics.addBody(wallTop, "static", { density=0, bounce=0.1, friction=0, isSensor=true})
 
+	physics.addBody(wallTop, "static", { density=0, bounce=0.1, friction=0, isSensor=true})
 	wallsTop:insert(wallTop)
 
 	wallBottom = display.newRect( hoop.x , ( hoop.y + (hoop.height / 2) + 5), 1, 1000)
@@ -379,6 +370,7 @@ function addHoops()
 	wallBottom.id = 'wallbottom'
 	wallBottom.touched = false
 	wallBottom.alpha = 0
+
 	physics.addBody(wallBottom, "static", { density=0, bounce=0.1, friction=0, isSensor=true})
 	wallsBottom:insert(wallBottom)
 
@@ -411,7 +403,7 @@ function removeHeart()
 	mydata.lives = mydata.lives - 1
 	renderHearts()
 
-	print('lives is: ' .. mydata.lives)
+	
 	if(mydata.lives  < 0) then
 		--doh last life.. it's game over!
 		gameOver()
@@ -542,9 +534,6 @@ function scene:exitScene(event)
 	
 	Runtime:removeEventListener("touch", flyUp)
 	Runtime:removeEventListener("enterFrame", enterFrame)
-	print('exit scene called')
-	print('elemt: ' .. #elements)
-	elements:removeSelf()
 	timer.cancel(addHoopTimer)
 	timer.cancel(moveHoopTimer)
 
@@ -552,11 +541,7 @@ end
 
 function scene:destroyScene(event)
 	local group = self.view
-	print('elemt: ' .. #elements)
-	print('destroy scene called')
-	elements:removeSelf()
 end
-
 -----------------------------------------------------------------------------------------
 -- END OF YOUR IMPLEMENTATION
 -----------------------------------------------------------------------------------------

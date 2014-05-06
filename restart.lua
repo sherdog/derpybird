@@ -156,6 +156,7 @@ function restartGame(event)
 end
 
 function scene:enterScene(event)
+    local group = self.view
 	storyboard.removeScene("stage")
 	--showGameOver()
 	loadScore()
@@ -244,26 +245,26 @@ function scene:createScene(event)
     
     group:insert(sign)
 
-    currentScoreTitle = display.newText("Score", 80, 150, "8-Bit Madness", 30)
-    currentScoreTitle:setFillColor( 0,0,0 )
+    currentScoreTitle = display.newText("Score", 100, 150, "8-Bit Madness", 30)
+    currentScoreTitle:setFillColor( 0.49, 0.506, 0.384 )
     currentScoreTitle.alpha = 0
     
     group:insert(currentScoreTitle)
 
     currentScore = display.newText("0", currentScoreTitle.x, currentScoreTitle.y+40, "8-Bit Madness", 50)
-    currentScore:setFillColor(0,0,0 )
+    currentScore:setFillColor( 0.49, 0.506, 0.384 )
     currentScore.alpha = 0
 
     group:insert(currentScore)
 
-    bestScoreTitle = display.newText("Best", currentScoreTitle.x + 165, currentScoreTitle.y, "8-Bit Madness", 30)
-    bestScoreTitle:setFillColor( 0,0,0 )
+    bestScoreTitle = display.newText("Best", currentScoreTitle.x + 125, currentScoreTitle.y, "8-Bit Madness", 30)
+    bestScoreTitle:setFillColor( 0.49, 0.506, 0.384 )
     bestScoreTitle.alpha = 0
     
     group:insert(bestScoreTitle)
 
     bestScore = display.newText("0", bestScoreTitle.x, bestScoreTitle.y + 40, "8-Bit Madness", 50)
-    bestScore:setFillColor( 0,0,0 )
+    bestScore:setFillColor( 0.49, 0.506, 0.384 )
     bestScore.alpha = 0
 
     group:insert(bestScore)
@@ -382,25 +383,31 @@ function scrollBackground()
 end
 
 function enterFrame(event)
-    --if bird y is less than -200.. let's cap it at 200
     scrollBackground()
 
 end
 
+function scene:destroyScene(event)
+    local group = self.view
+end
+
 function scene:exitScene(event)
 	--transition.cancel(fadeTransition)
+    local group = self.view
+    Runtime:removeEventListener("enterFrame", enterFrame)
 	
 end
 
 function scene:destroyScene(event)
-
+    local group = self.view
 end
 
 scene:addEventListener("createScene", scene)
 scene:addEventListener("enterScene", scene)
 scene:addEventListener("exitScene", scene)
 
-Runtime:addEventListener( "enterFrame", enterFrame )
 scene:addEventListener("destroyScene", scene)
+
+Runtime:addEventListener( "enterFrame", enterFrame )
 
 return scene
