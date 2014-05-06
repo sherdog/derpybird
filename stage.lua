@@ -19,7 +19,12 @@ local layerOneSpeed = 2
 local layerTwoSpeed = .6
 local layerThreeSpeed = .3
 
+local spawnTmr
+local spawnTime = 3500
+local difficultyLevels = 350
+
 local ground2, background, ground, rect, trees, trees2, mtn, mtn2, cloud1, cloud2, instructions, flyingBird, hoop, wallTop, wallBottom, sign
+local difficultyTimer
 
 local g = graphics.newGradient(
 	  { 211, 255, 192 },
@@ -293,6 +298,26 @@ function renderHearts()
 	end
 end
 
+function increaseDifficulty()
+	print('made it to increaseDifficulty')
+	if addHoopTimer ~= nil then
+        timer.cancel(addHoopTimer)
+   		spawnTmr = nil
+    end
+      spawnTime = spawnTime - 500
+
+       -- just to be safe, set this to whatever spawn rate would be the
+       -- fastest, so game never spawns to fast
+       print("spawn time: " .. spawnTime)
+       if spawnTime < 500 then
+       	spawnTime = 250
+       end
+       -- spawn at this rate until this timer is canceled 
+       -- spawnTmr =  timer.performWithDelay(spawnTime, spawnEnemy, 0)
+       addHoopTimer = timer.performWithDelay(spawnTime, addHoops, 0)
+      
+end
+
 function flyUp(event)
 	 if event.phase == "began" then
        
@@ -302,30 +327,24 @@ function flyUp(event)
 			 --tb.alpha = 1
 			 scoreText.alpha = 1
 			 hud.alpha = 1
-			 
-			 if(mydata.score >= 0 and mydata.score < 10 ) then
-			 	timerMin = 2000
-			 	timerMax = math.random(4000,5000)
-			 elseif(mydata.score >= 10 and mydata.score < 30) then
-			 	timerMin = 1500
-			 	timerMax = math.random(3000,4000)
-			 elseif(mydata.score >= 30 and mydata.score < 100) then
-			 	timerMin = 1000
-			 	timerMax = math.random(2000,3000)
-			 else
-			 	timerMin = 500
-			 	timerMax = math.random(1000,3000)
-			 end
-
-			 addHoopTimer = timer.performWithDelay(math.random(timerMin, timerMax), addHoops, -1)
-			 moveHoopTimer = timer.performWithDelay(90, moveHoops, -1)
-
 			 gameStarted = true
 			 dummyBird:applyForce( 0, -190, dummyBird.x, dummyBird.y)
+
+			 difficultyTimer = timer.performWithDelay(15000, increaseDifficulty, difficultyLevels)
+			 addHoopTimer = timer.performWithDelay(3500, addHoops, 10)
+			 moveHoopTimer = timer.performWithDelay(90, moveHoops, -1)	
+	 		 
 		else 
+
        	    dummyBird:applyForce(0, -300, dummyBird.x, dummyBird.y)
       end
 	end
+end
+
+function setHoopTimer()
+	
+
+	
 end
 
 function gameOver()
@@ -534,9 +553,13 @@ function scene:exitScene(event)
 	
 	Runtime:removeEventListener("touch", flyUp)
 	Runtime:removeEventListener("enterFrame", enterFrame)
-	timer.cancel(addHoopTimer)
+	if(addHoopTimer ~= nil) then
+		timer.cancel(addHoopTimer)
+	end
 	timer.cancel(moveHoopTimer)
-
+	if(difficultyTimer ~= nil) then
+		timer.cancel(difficultyTimer)
+	end
 end
 
 function scene:destroyScene(event)
