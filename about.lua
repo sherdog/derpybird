@@ -19,6 +19,15 @@ local myImageSheet = graphics.newImageSheet( "assets/sprites.png", sheetInfo:get
 
 local fontOptions, authorText, background, buttonBack, logo
 
+if "Win" == system.getInfo( "platformName" ) then
+    EIGHTBIT = "8-Bit Madness"
+elseif "Android" == system.getInfo( "platformName" ) then
+    EIGHTBIT = "eight_bit_maddness"
+else
+    -- Mac and iOS
+    EIGHTBIT = "8-Bit-Madness"
+end
+
 function scene:createScene( event )
 	local group = self.view
 	
@@ -26,22 +35,21 @@ function scene:createScene( event )
 	--Font name for 8bit font
 	--8-Bit-Madness
 	fontOptions = {
-		text = "Version 1.0:\n\nDesigned and Developed by:\n\nDanica Sheridan\nMike Sheridan\n\nCopyright 2014\nwww.interactivearmy.com",
+		text = "Designed by: Danica Sheridan\n\nCoded by: Mike Sheridan\n\nCopyright 2014",
 		fontSize = 18,
 		x = 0,
 		y = 0,
 		width = 300,
 		height = 300,
-		font = "8-Bit Madness"
+		font = EIGHTBIT
 	}
-	
+
 	authorText = display.newText(fontOptions)
-	authorText.x = 20
+	authorText.x = 50
 	authorText.y = display.contentHeight
 	authorText.anchorX = 0
 	authorText.anchorY = 0
 	authorText:setFillColor(1,1,1)
-
 
 	background = display.newImage( myImageSheet , sheetInfo:getFrameIndex("background_blue_green"))
 	background.x = 0
@@ -49,6 +57,14 @@ function scene:createScene( event )
 	background.anchorX = 0
 	background.anchorY = 0
 	group:insert(background)
+
+	dynomike = display.newImage(myImageSheet, sheetInfo:getFrameIndex("dynimike_games"))
+	dynomike.anchorX = 0
+	dynomike.anchorY = 0
+	dynomike.x = display.contentCenterX  - (dynomike.width/2)
+	dynomike.y = display.contentCenterY
+
+	group:insert(dynomike)
 
 	logo = display.newImage(myImageSheet, sheetInfo:getFrameIndex("derpy_bird_logo"))
 	logo.anchorY = 	0
