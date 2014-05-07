@@ -26,6 +26,18 @@ local difficultyLevels = 350
 local ground2, background, ground, rect, trees, trees2, mtn, mtn2, cloud1, cloud2, instructions, flyingBird, hoop, wallTop, wallBottom, sign
 local difficultyTimer
 
+local EIGHTBIT
+
+
+if "Win" == system.getInfo( "platformName" ) then
+    EIGHTBIT = "8-Bit Madness"
+elseif "Android" == system.getInfo( "platformName" ) then
+    EIGHTBIT = "eight_bit_maddness"
+else
+    -- Mac and iOS
+    EIGHTBIT = "8-Bit-Madness"
+end
+
 local g = graphics.newGradient(
 	  { 211, 255, 192 },
 	  { 0, 111, 225 },
@@ -236,7 +248,7 @@ function scene:createScene( event )
 
 	scoreText = score.init({
 		fontSize = 70,
-		font = "8-Bit Madness",
+		font = EIGHTBIT,
 		x = display.contentCenterX,
 		y = 90,
 		maxDigits = 4,
@@ -280,7 +292,7 @@ function renderHearts()
 		else
 			heart[i] = display.newImage(myImageSheet, sheetInfo:getFrameIndex("heart_empty"))
 		end
-		heart[i].x = (display.contentWidth - ((heart[i].width + 3) * (heartCount - i)))
+		heart[i].x = ((display.contentWidth-20) - ((heart[i].width + 3) * (heartCount - i)))
 		heart[i].y = 20
 		hud:insert(heart[i])
 	end
