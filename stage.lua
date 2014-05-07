@@ -260,21 +260,9 @@ function scene:createScene( event )
 
 	group:insert(hud)
 	
-	xText = display.newText( "X",30, 20, native.systemFontBold,  10 )
-	xText:setFillColor( 0,0,0 )
-	xText.alpha = 1
-	hud:insert(xText)
+	
 
-	coinText = display.newText( mydata.coins, 43, 21, "8-Bit Madness", 30)
-	coinText:setFillColor( 0,0,0 )
-	coinText.alpha = 1
-	hud:insert(coinText)
-
-	coinIcon = display.newImage(myImageSheet, sheetInfo:getFrameIndex("coin32"))
-	coinIcon.x = 15
-	coinIcon.y = 20
-
-	hud:insert(coinIcon)
+	--hud:insert(coinIcon)
 
 	renderHearts()
 
@@ -401,12 +389,7 @@ function addHoops()
 	hoopFront.anchorY = 0.5
 	elementsTop:insert(hoopFront)
 
-	for x = 0, 3,1 do
-		coin = display.newImage( myImageSheet, sheetInfo:getFrameIndex("coin"))
-		coin.x = (hoop.x + (hoop.x * 2) + 20)
-		coin.y = hoop.y + (hoop.height / 2)
-		coinGroup:insert(coin)
-	end
+	
 
 	hoopCount = hoopCount + 1
 end
