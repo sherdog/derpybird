@@ -13,7 +13,7 @@ settings =
             FacebookAppID = "1482803695265952",
             CFBundleURLTypes = {
                 {
-                CFBundleURLSchemes = { "1482803695265952", }
+                CFBundleURLSchemes = { "fb1482803695265952", }
                 }
             },
             UIAppFonts = { "eight_bit_madness.ttf" },
