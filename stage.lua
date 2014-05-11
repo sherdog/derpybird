@@ -28,7 +28,6 @@ local difficultyTimer
 
 local EIGHTBIT
 
-
 if "Win" == system.getInfo( "platformName" ) then
     EIGHTBIT = "8-Bit Madness"
 elseif "Android" == system.getInfo( "platformName" ) then
@@ -527,9 +526,9 @@ function enterFrame(event)
 
 	flyingBird.x = dummyBird.x
 	flyingBird.y = dummyBird.y
-
-	if(dummyBird.y < -200) then
-		dummyBird.y = -200
+	print('db y: ' .. dummyBird.y)
+	if(dummyBird.y < -20) then
+		dummyBird.y = -20
 	end
 	
 	if(flyingBird.y > prevY) then

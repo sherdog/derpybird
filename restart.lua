@@ -14,11 +14,13 @@ local screenCap, sign, fbButton
 
 local facebookAppID = "1482803695265952"
 local FB_Command = nil
+local fbButton
 
 local layerOneSpeed = 2
 local layerTwoSpeed = .6
 local layerThreeSpeed = .3
 local EIGHTBIT
+
 
 
 if "Win" == system.getInfo( "platformName" ) then
@@ -66,14 +68,15 @@ function print_r ( t )
 end
 
 function facebookListener( event )
-  --  print_r( event )
+    
+  --print_r( event )
     if ( "session" == event.type ) then
         --options are: "login", "loginFailed", "loginCancelled", or "logout"
         if ( "login" == event.phase ) then
             local access_token = event.token
 
             --code for tasks following a successful login
-            print( 'Token: ' .. access_token )
+            --print( 'Token: ' .. access_token )
             if FB_Command then
             	 
             	 local highscore = mydata.score
@@ -106,7 +109,7 @@ function facebookListener( event )
     			screenCap:removeSelf()
 
             	attachment = {
-			       	message = "I scored " .. mydata.score .. ' ' .. scoreString .. " playing Derpy Bird! Think you can beat me?",
+			       	message = "I scored " .. mydata.score .. ' ' .. scoreString .. " playing Derpy Bird! Think you can beat me? Download the app today! \n Download Derpy Bird for Android: https://play.google.com/store/apps/details?id=com.gmail.sherdog.derpybird",
 			        source = 
 			        { 
 				        baseDir = system.DocumentsDirectory, 
@@ -130,7 +133,9 @@ function facebookListener( event )
 end
 
 function doFacebook( event )
+    fbButton.isActive = false
     if event.phase == "ended" then
+
         FB_Command = "me/photos"
         facebook.login( facebookAppID, facebookListener, {"publish_actions", "email" })
     end
@@ -176,6 +181,7 @@ end
 
 function scene:createScene(event)
 	local group = self.view
+    
 
     background = display.newImage( myImageSheet , sheetInfo:getFrameIndex("background_blue_green"))
     background.x = 0
@@ -285,10 +291,6 @@ function scene:createScene(event)
         timer.performWithDelay( 200, onScoreBoardCompleteListener )
     end })
 
-
-    --Create HUD
-    -- Lives & Coins
-
     buttonRestart = widget.newButton
     {
         top = 0,
@@ -316,10 +318,11 @@ function scene:createScene(event)
     fbButton.x = 0
     fbButton.y = 0
     fbButton.alpha = 0
+    fbButton.isActive = true
 
     group:insert(fbButton)
 
-    facebook.login( facebookAppID, facebookListener )
+    
 
 end
 
