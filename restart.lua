@@ -75,10 +75,14 @@ function facebookListener( event )
         if ( "login" == event.phase ) then
             local access_token = event.token
 
+
             --code for tasks following a successful login
             --print( 'Token: ' .. access_token )
             if FB_Command then
             	 
+                 -- Post score to the facebook API
+                 facebook.request( "me/scores", "POST", {score= .. mydata.score})
+
             	 local highscore = mydata.score
             	 local baseDir = system.DocumentsDirectory
             	 
@@ -109,7 +113,7 @@ function facebookListener( event )
     			screenCap:removeSelf()
 
             	attachment = {
-			       	message = "I scored " .. mydata.score .. ' ' .. scoreString .. " playing Derpy Bird! Think you can beat me? Download the app today! \n Download Derpy Bird for Android: https://play.google.com/store/apps/details?id=com.gmail.sherdog.derpybird",
+			       	message = "I scored " .. mydata.score .. ' ' .. scoreString .. " playing Derpy Bird! Think you can beat me? Download the app today! \n Download for Android: https://play.google.com/store/apps/details?id=com.gmail.sherdog.derpybird",
 			        source = 
 			        { 
 				        baseDir = system.DocumentsDirectory, 
@@ -189,6 +193,13 @@ function scene:createScene(event)
     background.anchorX = 0
     background.anchorY = 0
     group:insert(background)
+
+    background2 = display.newImage( myImageSheet , sheetInfo:getFrameIndex("background_blue_green"))
+    background2.x = background.x + background.width
+    background2.y = 0
+    background2.anchorX = 0
+    background2.anchorY = 0
+    group:insert(background2)
 
     mtn = display.newImage(myImageSheet, sheetInfo:getFrameIndex("mountains"))
     mtn.x = 0
