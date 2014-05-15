@@ -1,7 +1,7 @@
 
 local physics = require "physics"
 physics.start()
-physics.setGravity( 0, 50 )
+physics.setGravity( 0, 40 )
 
 local mydata = require( "mydata" )
 local storyboard = require ("storyboard")
@@ -335,7 +335,7 @@ function flyUp(event)
 	 		 
 		else 
 
-       	    dummyBird:applyForce(0, -350, dummyBird.x, dummyBird.y)
+       	    dummyBird:applyForce(0, -550, dummyBird.x, dummyBird.y)
       end
 	end
 end
@@ -533,10 +533,10 @@ function enterFrame(event)
 	
 	if(flyingBird.y > prevY) then
 		diffY = math.ceil( dummyBird.y - prevY )
-		flyingBird.rotation = (diffY * 1.1)
+		flyingBird.rotation = (diffY * 1.5)
 	else
 		diffY = math.ceil( prevY  - dummyBird.y)
-		flyingBird.rotation = (-diffY * 1.1)
+		flyingBird.rotation = (-diffY * 1.5)
 	end
 
 	prevY = dummyBird.y
