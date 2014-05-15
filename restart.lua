@@ -190,19 +190,12 @@ function scene:createScene(event)
 	local group = self.view
     
 
-    background = display.newImage( myImageSheet , sheetInfo:getFrameIndex("background_blue_green"))
+    background = display.newImageRect( "background.png", 360, 570)
     background.x = 0
     background.y = 0
     background.anchorX = 0
     background.anchorY = 0
     group:insert(background)
-
-    background2 = display.newImage( myImageSheet , sheetInfo:getFrameIndex("background_blue_green"))
-    background2.x = background.x + background.width
-    background2.y = 0
-    background2.anchorX = 0
-    background2.anchorY = 0
-    group:insert(background2)
 
     mtn = display.newImage(myImageSheet, sheetInfo:getFrameIndex("mountains"))
     mtn.x = 0

@@ -54,7 +54,7 @@ function scene:createScene( event )
 	
 	end
   
-	background = display.newImage( myImageSheet , sheetInfo:getFrameIndex("background_blue_green"))
+	background = display.newImageRect( "background.png", 360, 570)
 	background.x = 0
 	background.y = 0
 	background.anchorX = 0
