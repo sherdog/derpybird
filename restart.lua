@@ -69,7 +69,7 @@ end
 
 function facebookListener( event )
     
-  --print_r( event )
+  print_r( event )
     if ( "session" == event.type ) then
         --options are: "login", "loginFailed", "loginCancelled", or "logout"
         if ( "login" == event.phase ) then
@@ -79,9 +79,12 @@ function facebookListener( event )
             --code for tasks following a successful login
             --print( 'Token: ' .. access_token )
             if FB_Command then
-            	 
                  -- Post score to the facebook API
-                 facebook.request( "me/scores", "POST", {score= .. mydata.score})
+                 scoreData = {
+                     score = tostring(mydata.score),
+                     access_token = event.token,
+                 }
+                 facebook.request( "me/scores", "POST", scoreData)
 
             	 local highscore = mydata.score
             	 local baseDir = system.DocumentsDirectory

@@ -298,7 +298,7 @@ function renderHearts()
 end
 
 function increaseDifficulty()
-	print('made it to increaseDifficulty')
+	--print('made it to increaseDifficulty')
 	if addHoopTimer ~= nil then
         timer.cancel(addHoopTimer)
    		spawnTmr = nil
@@ -307,7 +307,7 @@ function increaseDifficulty()
 
        -- just to be safe, set this to whatever spawn rate would be the
        -- fastest, so game never spawns to fast
-       print("spawn time: " .. spawnTime)
+      -- print("spawn time: " .. spawnTime)
        if spawnTime < 500 then
        	spawnTime = 250
        end
@@ -526,7 +526,7 @@ function enterFrame(event)
 
 	flyingBird.x = dummyBird.x
 	flyingBird.y = dummyBird.y
-	print('db y: ' .. dummyBird.y)
+	--print('db y: ' .. dummyBird.y)
 	if(dummyBird.y < -20) then
 		dummyBird.y = -20
 	end
