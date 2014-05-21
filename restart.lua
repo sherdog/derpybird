@@ -21,8 +21,6 @@ local layerTwoSpeed = .6
 local layerThreeSpeed = .3
 local EIGHTBIT
 
-
-
 if "Win" == system.getInfo( "platformName" ) then
     EIGHTBIT = "8-Bit Madness"
 elseif "Android" == system.getInfo( "platformName" ) then
@@ -31,7 +29,6 @@ else
     -- Mac and iOS
     EIGHTBIT = "8-Bit-Madness"
 end
-
 
 function print_r ( t )
     local print_r_cache={}
@@ -74,7 +71,6 @@ function facebookListener( event )
         --options are: "login", "loginFailed", "loginCancelled", or "logout"
         if ( "login" == event.phase ) then
             local access_token = event.token
-
 
             --code for tasks following a successful login
             --print( 'Token: ' .. access_token )
@@ -134,7 +130,7 @@ function facebookListener( event )
             local data = json.decode( event.response )
             native.showAlert( "Success", "Your score has been posted!", {"OK"})
         else
-            native.showAlert( "Error", "There was an error in your request", { "OK" })
+            native.showAlert( "Error", event.response, { "OK" })
         end
     end
 end
