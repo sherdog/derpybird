@@ -7,6 +7,7 @@ local mydata = require( "mydata" )
 local storyboard = require ("storyboard")
 local scene = storyboard.newScene()
 local score = require('score')
+local audio = require("audio")
 
 mydata.coins = 0
 mydata.score = 0
@@ -25,6 +26,12 @@ local difficultyLevels = 350
 
 local ground2, background, ground, rect, trees, trees2, mtn, mtn2, cloud1, cloud2, instructions, flyingBird, hoop, wallTop, wallBottom, sign
 local difficultyTimer
+
+local woosh = audio.loadStream("woosh.wav")
+audio.setVolume( 0.5, { channel=1 } )  -- set the master volume
+
+local gameover = audio.loadStream("gameover.wav")
+local blip = audio.loadStream("blip.wav")
 
 local EIGHTBIT
 
@@ -328,12 +335,15 @@ function flyUp(event)
 			 hud.alpha = 1
 			 gameStarted = true
 			 dummyBird:applyForce( 0, -190, dummyBird.x, dummyBird.y)
-
 			 difficultyTimer = timer.performWithDelay(15000, increaseDifficulty, difficultyLevels)
 			 addHoopTimer = timer.performWithDelay(3500, addHoops, 10)
 			 moveHoopTimer = timer.performWithDelay(90, moveHoops, -1)	
-	 		 
+	 		 	
+	 		
+
 		else 
+			 audio.stop()
+			 audio.play(woosh, { channel = 1})
 
        	    dummyBird:applyForce(0, -550, dummyBird.x, dummyBird.y)
       end
@@ -347,6 +357,7 @@ function setHoopTimer()
 end
 
 function gameOver()
+	local gameoverSound = audio.play(gameover)
 	storyboard.gotoScene("restart")	
 end
 
@@ -416,9 +427,10 @@ function removeHeart()
 	mydata.lives = mydata.lives - 1
 	renderHearts()
 
-	
+	local blipSound = audio.play(blip)
 	if(mydata.lives  < 0) then
 		--doh last life.. it's game over!
+
 		gameOver()
 	end
 end
