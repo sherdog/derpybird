@@ -7,15 +7,13 @@ local score = require( "score" )
 local sheetInfo = require("assets.sprites")
 local myImageSheet = graphics.newImageSheet( "assets/sprites.png", sheetInfo:getSheet() )
 local widget = require("widget")
-local facebook = require( "facebook" )
 local json = require("json")
 
+local Face = require("fbsocial")
+access_token = nil
+
 local screenCap, sign, fbButton
-
-local facebookAppID = "1482803695265952"
-local FB_Command = nil
 local fbButton
-
 local layerOneSpeed = 2
 local layerTwoSpeed = .6
 local layerThreeSpeed = .3
@@ -30,118 +28,18 @@ else
     EIGHTBIT = "8-Bit-Madness"
 end
 
-function print_r ( t )
-    local print_r_cache={}
-    local function sub_print_r(t,indent)
-        if (print_r_cache[tostring(t)]) then
-            print(indent.."*"..tostring(t))
-        else
-            print_r_cache[tostring(t)]=true
-            if (type(t)=="table") then
-                for pos,val in pairs(t) do
-                    if (type(val)=="table") then
-                        print(indent.."["..pos.."] => "..tostring(t).." {")
-                        sub_print_r(val,indent..string.rep(" ",string.len(pos)+8))
-                        print(indent..string.rep(" ",string.len(pos)+6).."}")
-                    elseif (type(val)=="string") then
-                        print(indent.."["..pos..'] => "'..val..'"')
-                    else
-                        print(indent.."["..pos.."] => "..tostring(val))
-                    end
-                end
-            else
-                print(indent..tostring(t))
-            end
-        end
-    end
-    if (type(t)=="table") then
-        print(tostring(t).." {")
-        sub_print_r(t,"  ")
-        print("}")
-    else
-        sub_print_r(t,"  ")
-    end
-    print()
-end
-
-function facebookListener( event )
-    
-  print_r( event )
-    if ( "session" == event.type ) then
-        --options are: "login", "loginFailed", "loginCancelled", or "logout"
-        if ( "login" == event.phase ) then
-            local access_token = event.token
-
-            --code for tasks following a successful login
-            --print( 'Token: ' .. access_token )
-            if FB_Command then
-                 -- Post score to the facebook API
-                 scoreData = {
-                     score = tostring(mydata.score),
-                     access_token = event.token,
-                 }
-                 facebook.request( "me/scores", "POST", scoreData)
-
-            	 local highscore = mydata.score
-            	 local baseDir = system.DocumentsDirectory
-            	 
-                 local screenBounds = {
-            	 	xMin = 0,
-            	 	xMax = display.contentWidth,
-            	 	yMin = 0,
-            	 	yMax = display.contentHeight,
-            	}
-
-            	local screenShotName = "derpyBirdscore_" .. highscore .. '.png'
-    			
-            	if(highscore == 1) then
-            		scoreString = 'point'
-            	else
-            		scoreString = 'points'
-            	end
-
-    			--screenCap = display.captureBounds(true)
-    			screenCap = display.captureScreen(false )
-    			screenCap.x = 0
-    			screenCap.y = 0
-    			screenCap.anchorX = 0
-    			screenCap.anchorY = 0
-    			screenCap:scale(0.5, 0.5)
-    			display.save( screenCap, screenShotName, baseDir )
-    			
-    			screenCap:removeSelf()
-
-            	attachment = {
-			       	message = "I scored " .. mydata.score .. ' ' .. scoreString .. " playing Derpy Bird! Think you can beat me? Download the app today! \n Download for Android: https://play.google.com/store/apps/details?id=com.gmail.sherdog.derpybird",
-			        source = 
-			        { 
-				        baseDir = system.DocumentsDirectory, 
-				        filename = screenShotName, 
-				        type = "image" 
-				    }
-			    }
-                facebook.request( FB_Command, "POST", attachment )
-
-            end
-        end
-    elseif ( "request" == event.type ) then
-        print("facebook request")
-        if ( not event.isError ) then
-            local data = json.decode( event.response )
-            native.showAlert( "Success", "Your score has been posted!", {"OK"})
-        else
-            native.showAlert( "Error", event.response, { "OK" })
-        end
-    end
-end
 
 function doFacebook( event )
-    fbButton.isActive = false
-    if event.phase == "ended" then
+    --native.setActivityIndicator( true )
+    score = tostring(mydata.score)
+    FacePostScore(score)
 
-        FB_Command = "me/photos"
-        facebook.login( facebookAppID, facebookListener, {"publish_actions", "email" })
-    end
+end
+
+function mylistener()
+    
+  
+
 end
 
 function showStart()
@@ -149,7 +47,6 @@ function showStart()
 end
 
 function loadScore()
-
 	local prevScore = score.load()
 
 	if prevScore ~= nil then
@@ -266,7 +163,7 @@ function scene:createScene(event)
     
     group:insert(sign)
 
-    currentScoreTitle = display.newText("Score", 100, 150, EIGHTBIT, 30)
+    currentScoreTitle = display.newText("Score", 120, 150, EIGHTBIT, 30)
     currentScoreTitle:setFillColor( 0.49, 0.506, 0.384 )
     currentScoreTitle.alpha = 0
     
@@ -316,7 +213,7 @@ function scene:createScene(event)
         onEvent = doFacebook
     })
 
-    fbButton.anchorX = 0.5
+    fbButton.anchorX = 1
     fbButton.anchorY = 0
     fbButton.x = 0
     fbButton.y = 0
@@ -341,12 +238,12 @@ function onScoreBoardCompleteListener(obj)
         bestScore.text = score.load()
         bestScore.alpha = 1
 
-        buttonRestart.x = sign.x + 65
+        buttonRestart.x = sign.x + 50
         buttonRestart.y = sign.height +  20
 
         buttonRestart.alpha = 1
 
-        fbButton.x = sign.width - 30
+        fbButton.x = sign.x +  sign.width 
         fbButton.y = sign.height + 20
 
         fbButton.alpha = 1

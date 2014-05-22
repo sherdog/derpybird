@@ -298,7 +298,7 @@ function renderHearts()
 		else
 			heart[i] = display.newImage(myImageSheet, sheetInfo:getFrameIndex("heart_empty"))
 		end
-		heart[i].x = ((display.contentWidth-20) - ((heart[i].width + 3) * (heartCount - i)))
+		heart[i].x = ((display.contentWidth) - ((heart[i].width + 3) * (heartCount - i)))
 		heart[i].y = 20
 		hud:insert(heart[i])
 	end
