@@ -7,6 +7,29 @@ M = {}
 
 M.isSimulator = ("simulator" == system.getInfo("environment"))
 
+function printTable( t, label, level )
+    if label then print( label ) end
+    level = level or 1
+    if type(t) ~= "table" then
+        t = json.decode(t)
+    end
+    if t then
+        for k,v in pairs( t ) do
+            local prefix = ""
+            for i=1,level do
+                prefix = prefix .. "\t"
+            end
+
+            print( prefix .. "[" .. tostring(k) .. "] = " .. tostring(v) )
+            if type( v ) == "table" then
+                print( prefix .. "{" )
+                printTable( v, nil, level + 1 )
+                print( prefix .. "}" )
+            end
+        end
+    end
+end
+
 function M.print_r ( t ) 
     local print_r_cache={}
     local function sub_print_r(t,indent)

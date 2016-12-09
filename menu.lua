@@ -1,28 +1,39 @@
 local physics = require "physics"
 physics.start()
 local widget = require("widget")
-
+local adcolony = require( "plugin.adcolony" )
 local mydata = require( "mydata" )
 local composer = require( "composer" )
 local scene = composer.newScene()
+ local coronaAds = require( "plugin.coronaAds" )
+     -- Substitute your own placement IDs when generated
+local bannerPlacement = "bottom-banner-320x50"
+local interstitialPlacement = "interstitial-1"
 
 local sheetInfo = require("assets.sprites")
 local myImageSheet = graphics.newImageSheet( "assets/sprites.png", sheetInfo:getSheet() )
 
 local flyingBird, smallCloud, background, buttonAbout, buttonPlay, logo, flyingBirdSequence
 
+
 -- Called immediately after scene has moved onscreen:
 function scene:show( event )
 
 	local group = self.view
 	if(event.phase == 'did') then
-		print('show did called')
 		composer.removeScene("stage")
 	end
 end
 
+local function adListener( event )
+	-- Successful initialization of Corona Ads
+	if ( event.phase == "init" ) then
+		coronaAds.show( bannerPlacement, false )
+	end
+end
+
+ -- Initialize the AdColony plugin with your Corona Ads API key
 function scene:create( event )
-	print('create called')
 	local group = self.view
 
 	background = display.newImageRect( "background.png", 360, 570)
@@ -31,6 +42,13 @@ function scene:create( event )
 	background.anchorX = 0
 	background.anchorY = 0
 	group:insert(background)
+
+	if ( adcolony.isLoaded( "interstitial" ) ) then
+		adcolony.load( "interstitial" )
+	else
+		print('banner was not fucking loaded')	
+	end
+	
 
 	smallCloud = display.newImage( myImageSheet , sheetInfo:getFrameIndex("cloud_small"))
 	smallCloud.x = 0
@@ -91,6 +109,9 @@ function scene:create( event )
 	buttonAbout.anchorY = 0
 
 	group:insert(buttonAbout)
+
+	 -- Sometime later, show an ad
+	
 end
 
 function aboutButtonClick(event)
@@ -147,7 +168,7 @@ function scene:destroy( event )
 	end
 end
 
-
+coronaAds.init( "cdee5737-4331-4fb0-9569-b042cbde5ebb", adListener )
 -----------------------------------------------------------------------------------------
 -- END OF YOUR IMPLEMENTATION
 -----------------------------------------------------------------------------------------

@@ -16,10 +16,20 @@ settings =
           publisherId = "com.coronalabs",
           supportedPlatforms = { android=true }
         },
+        ["plugin.coronaAds"] =
+        {
+          publisherId = "com.coronalabs",
+          supportedPlatforms = { android=true, ["amazon-kindle"]=true, iphone=true }
+        },
+        ["plugin.chartboost"] =
+        {
+          publisherId = "com.coronalabs",
+          supportedPlatforms = { android=true, ["amazon-kindle"]=true, iphone=true }
+        },
         ["plugin.adcolony"] =
         {
           publisherId = "com.coronalabs",
-          supportedPlatforms = { android=true, iphone=true }
+          supportedPlatforms = { android=true, ["amazon-kindle"]=true, iphone=true }
         }
     },
     iphone =
