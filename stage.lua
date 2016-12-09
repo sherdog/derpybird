@@ -1,12 +1,16 @@
 
 local physics = require "physics"
 physics.start()
-physics.setGravity( 0, 50 )
+physics.setGravity( 0, 40 )
 
 local mydata = require( "mydata" )
-local storyboard = require ("storyboard")
-local scene = storyboard.newScene()
+local composer = require ("composer")
+local scene = composer.newScene()
 local score = require('score')
+local audio = require("audio")
+
+
+local prevScene = composer.getSceneName("previous")
 
 mydata.coins = 0
 mydata.score = 0
@@ -19,62 +23,96 @@ local layerOneSpeed = 2
 local layerTwoSpeed = .6
 local layerThreeSpeed = .3
 
-local ground2, background, ground, rect, trees, trees2, mtn, mtn2, cloud1, cloud2, instructions, flyingBird,flyingBird, hoop, wallTop, wallBottom
+local spawnTmr
+local spawnTime = 3500
+local difficultyLevels = 350
+
+local ground2, background, ground, rect, trees, trees2, mtn, mtn2, cloud1, cloud2, instructions, flyingBird, hoop, wallTop, wallBottom, sign
+local difficultyTimer
+
+local woosh = audio.loadStream("assets/sound/woosh.wav")
+local gameover = audio.loadStream("assets/sound/gameover.wav")
+local blip = audio.loadStream("assets/sound/blip.wav")
+audio.setVolume( 0.5, { channel = 1 } )  -- set the master volume
+
+local EIGHTBIT
+
+if "Win" == system.getInfo( "platformName" ) then
+    EIGHTBIT = "eight_bit_madness.ttf"
+elseif "Android" == system.getInfo( "platformName" ) then
+    EIGHTBIT = "eight_bit_madness.ttf"
+else
+    -- Mac and iOS
+    EIGHTBIT = "eight_bit_madness.ttf"
+end
 
 local g = graphics.newGradient(
 	  { 211, 255, 192 },
 	  { 0, 111, 225 },
 	  "down" )
 
-local elements
 local coinGroup
-
 local gameStarted = false
+
+function checkMemory()
+   collectgarbage( "collect" )
+   local memUsage_str = string.format( "MEMORY = %.3f KB", collectgarbage( "count" ) )
+   --print( memUsage_str, "TEXTURE = "..(system.getInfo("textureMemoryUsed") / (1024 * 1024) ) )
+end
 
 function onCollision(event)
 	
 	if(event.phase == 'began') then
-		if(event.object1.id == 'ground' or event.object1.id == 'ground2') then
-			gameOver()
-		end
-
-		print('1: ' .. event.object1.id .. ' and 2: ' .. event.object2.id)
+		
 	end
-	print(event.object1.id .. event.object2.id)
-	if(event.object1.id == 'dummy' and event.object2.id == 'hoopTopRT') then
 
-	end
+	print(event.object2.id)
+	print(event.object2.touched)
+	print(event.object1.id)
 
 	if(event.phase == 'ended') then
-	print('obj2 = ' .. event.object1.id)
+
+		if(event.object1.id == 'ground' or event.object1.id == 'ground2' or
+			event.object2.id == 'ground' or event.object2.id == 'ground2') then
+			print("we hit the ground! wtf.")
+			event.object2.touched = false
+			event.object1.touched = false
+			gameOver()
+		end
 		--print('object was ' .. event.object2.id)
-		if(event.object2.id == 'hoop' and event.object1.id == 'dummy' ) then
-			print("SHOULD TKAE SCORE DOWNNNN")
+		if((event.object2.id == 'hoop' and event.object1.id == 'dummy' and event.object2.touched == false ) or
+			(event.object1.id == 'hoop' and event.object2.id == 'dummy' and event.object1.touched == false)) then
 			event.object2.touched = true
 			event.object1.touched = true
 			mydata.score = mydata.score + 1
 			scoreText.text = mydata.score
 		end
-		if((event.object2.id == 'walltop' or event.object2.id == 'wallbottom') and event.object1.id == 'dummy') then
-			mydata.lives = mydata.lives - 1
-			renderHearts()
+
+		if(( (event.object2.id == 'walltop' and event.object2.touched == false)  or (event.object2.id == 'wallbottom' and event.object2.touched == false)) and event.object1.id == 'dummy' and event.object2.touched == false) then
+			removeHeart()
+			event.object2.touched = true
 		end
 	end
 	return true
 end
 
-function scene:enterScene( event )
+function scene:show( event )
 	local group = self.view
-	storyboard.removeScene("menu")
-    memTimer = timer.performWithDelay( 1000, checkMemory, 0 )
+	if(event.phase == 'will') then
 
-
+	end
+	if(event.phase == 'did') then
+		composer.removeScene(prevScene)
+	end
+   memTimer = timer.performWithDelay( 1000, checkMemory, 0 )
 end
 
-function scene:createScene( event )
+function scene:create( event )
 	local group = self.view
-	 mydata.score = 0
-	background = display.newImage( myImageSheet , sheetInfo:getFrameIndex("background_blue_green"))
+	
+	mydata.score = 0
+
+	background = display.newImageRect( "background.png", 360, 570)
 	background.x = 0
 	background.y = 0
 	background.anchorX = 0
@@ -130,17 +168,20 @@ function scene:createScene( event )
 	ground.y = display.contentHeight
 	ground.anchorX = 0
 	ground.anchorY = 1
+
 	physics.addBody(ground, "static", {density=.1, bounce=0.1, friction=1})
 	ground.id = "ground"
+	ground.touch = false
 	group:insert(ground)
-
 
 	ground2 = display.newImage( myImageSheet , sheetInfo:getFrameIndex("ground"))
 	ground2:translate(ground.width, display.contentHeight)
 	ground2.y = display.contentHeight
 	ground2.anchorX = 0
 	ground2.anchorY = 1
+	ground2.touch = false
 	ground2.id ="ground2"
+
 	physics.addBody(ground2, "static", {density=.1, bounce=0.1, friction=1})
 	group:insert(ground2)
 
@@ -152,7 +193,6 @@ function scene:createScene( event )
 
 	group:insert(instructions)
 
-
 	elements = display.newGroup()
 	elements.anchorX = 0
 	elements.anchorY = 1
@@ -162,11 +202,11 @@ function scene:createScene( event )
 	
 	dummyBird = display.newRect( (display.contentWidth/2) - 80 , display.contentHeight/2, 50, 30 )
 	dummyBird:setFillColor( 0.5 )
+
 	dummyBird.anchorX = 0.5
 	dummyBird.anchorY = 0
 	dummyBird.id = 'dummy'
 	dummyBird.alpha = 0
-	dummyBird.isFixedRotation = true
 
 	group:insert(dummyBird)
 
@@ -228,11 +268,10 @@ function scene:createScene( event )
 	hitBoxTop.y = 0
 
 	group:insert(hitBoxTop)
-	
 
 	scoreText = score.init({
 		fontSize = 70,
-		font = "8-Bit Madness",
+		font = EIGHTBIT,
 		x = display.contentCenterX,
 		y = 90,
 		maxDigits = 4,
@@ -245,8 +284,6 @@ function scene:createScene( event )
 
 	group:insert(scoreText)
 
-	
-
 	--Create HUD
 	-- Lives & Coins
 
@@ -257,20 +294,6 @@ function scene:createScene( event )
 	hud.anchorY = 0
 
 	group:insert(hud)
-	
-	xText = display.newText( "X",30, 20, native.systemFontBold,  10 )
-	xText:setFillColor( 0,0,0 )
-	xText.alpha = 1
-	hud:insert(xText)
-
-	coinText = display.newText( mydata.coins, 43, 21, "8-Bit Madness", 30)
-	coinText:setFillColor( 0,0,0 )
-	coinText.alpha = 1
-	hud:insert(coinText)
-
-	coinIcon = display.newImage(myImageSheet, sheetInfo:getFrameIndex("coin32"))
-	coinIcon.x = 15
-	coinIcon.y = 20
 
 	renderHearts()
 
@@ -283,42 +306,79 @@ function renderHearts()
 	local initHeartX = display.contentWidth - 20
 
 	for i=0, 2, 1 do
-		print('mydata.lives is: ' .. mydata.lives .. 'and i is: ' .. i)
 		if(mydata.lives >= i) then
 			heart[i] = display.newImage(myImageSheet, sheetInfo:getFrameIndex("heart_full"))
 		else
 			heart[i] = display.newImage(myImageSheet, sheetInfo:getFrameIndex("heart_empty"))
 		end
-		heart[i].x = (display.contentWidth - ((heart[i].width + 3) * (heartCount - i)))
+		heart[i].x = ((display.contentWidth) - ((heart[i].width + 3) * (heartCount - i)))
 		heart[i].y = 20
 		hud:insert(heart[i])
 	end
+end
 
-	hud:insert(coinIcon)
+function increaseDifficulty()
+	--print('made it to increaseDifficulty')
+	if addHoopTimer ~= nil then
+        timer.cancel(addHoopTimer)
+   		spawnTmr = nil
+    end
+      spawnTime = spawnTime - 500
+
+       -- just to be safe, set this to whatever spawn rate would be the
+       -- fastest, so game never spawns to fast
+      	print("spawn time: " .. spawnTime)
+       if spawnTime < 500 then
+       	spawnTime = 250
+       end
+       -- spawn at this rate until this timer is canceled
+       addHoopTimer = timer.performWithDelay(spawnTime, addHoops, 0)
 end
 
 function flyUp(event)
 	 if event.phase == "began" then
-       
 		if gameStarted == false then
 			 dummyBird.bodyType="dynamic"
 			 instructions.alpha = 0
 			 --tb.alpha = 1
 			 scoreText.alpha = 1
 			 hud.alpha = 1
-			 addHoopTimer = timer.performWithDelay(math.random(2000, math.random(4000, 5000)), addHoops, -1)
-			 moveHoopTimer = timer.performWithDelay(90, moveHoops, -1)
 			 gameStarted = true
-			 dummyBird:applyForce( 0, -190, dummyBird.x, dummyBird.y)
-		else 
-       	    dummyBird:applyLinearImpulse(0, -10, dummyBird.x, dummyBird.y)
 
+			 dummyBird:applyForce( 0, -190, dummyBird.x, dummyBird.y)
+
+			 difficultyTimer = timer.performWithDelay(15000, increaseDifficulty, difficultyLevels)
+			 addHoopTimer = timer.performWithDelay(3500, addHoops, 10)
+			 moveHoopTimer = timer.performWithDelay(90, moveHoops, -1)	
+		else 
+			 audio.stop()
+			 audio.play(woosh, { channel = 1})
+			-- dummyBird:applyLinearImpulse(0, -10, dummyBird.x, dummyBird.y)
+       	    dummyBird:applyForce(0, -550, dummyBird.x, dummyBird.y)
       end
 	end
 end
 
 function gameOver()
-	storyboard.gotoScene("restart")	
+
+	Runtime:removeEventListener("touch", flyUp)
+	Runtime:removeEventListener("collision", onCollision)
+	Runtime:removeEventListener("enterFrame", enterFrame)
+
+	if(moveHoopTimer ~= nil) then
+			timer.cancel(moveHoopTimer)
+		end
+
+		if(addHoopTimer ~= nil) then
+			timer.cancel(addHoopTimer)
+		end
+		
+		if(difficultyTimer ~= nil) then
+			timer.cancel(difficultyTimer)
+		end
+
+	local gameoverSound = audio.play(gameover)
+	composer.gotoScene("restart")	
 end
 
 hoopCount = 0
@@ -346,9 +406,10 @@ function addHoops()
 	wallTop.anchorX = 0
 	wallTop.anchorY = 1
 	wallTop.id = 'walltop'
-	wallTop.alpha =0
-	physics.addBody(wallTop, "static", { density=0, bounce=0.1, friction=0, isSensor=true})
+	wallTop.touched = false
+	wallTop.alpha = 0
 
+	physics.addBody(wallTop, "static", { density=0, bounce=0.1, friction=0, isSensor=true})
 	wallsTop:insert(wallTop)
 
 	wallBottom = display.newRect( hoop.x , ( hoop.y + (hoop.height / 2) + 5), 1, 1000)
@@ -356,7 +417,9 @@ function addHoops()
 	wallBottom.anchorX = 0
 	wallBottom.anchorY = 0
 	wallBottom.id = 'wallbottom'
+	wallBottom.touched = false
 	wallBottom.alpha = 0
+
 	physics.addBody(wallBottom, "static", { density=0, bounce=0.1, friction=0, isSensor=true})
 	wallsBottom:insert(wallBottom)
 
@@ -368,36 +431,22 @@ function addHoops()
 	hoopFront.anchorY = 0.5
 	elementsTop:insert(hoopFront)
 
-	for x = 0, 3,1 do
-		coin = display.newImage( myImageSheet, sheetInfo:getFrameIndex("coin"))
-		coin.x = (hoop.x + (hoop.x * 2) + 20)
-		coin.y = hoop.y + (hoop.height / 2)
-		coinGroup:insert(coin)
-	end
-
 	hoopCount = hoopCount + 1
-
-end
-
-function addCoins(x,y)
-
-
-
 end
 
 function removeHeart()
-	if(mydata.lives == 0) then
+	mydata.lives = mydata.lives - 1
+	renderHearts()
+
+	local blipSound = audio.play(blip)
+	if(mydata.lives  < 0) then
 		--doh last life.. it's game over!
+
 		gameOver()
-	else
-		mydata.lives = mydata.lives - 1
-		renderHearts()
 	end
 end
 
 function moveHoops()
-
-	print('NUM CHILDRES: ' .. elements.numChildren)
 
 	for b = elements.numChildren,1,-1 do
 		
@@ -416,11 +465,13 @@ function moveHoops()
 			elementsTop[b].x = elements[b].x + elements[b].width
 			elementsTop[b].y = elements[b].y
 
-			wallsTop[b].x, wallsTop[b].y = elements[b].x + (elements[b].width/2), elements[b].y - (elements[b].height / 2) - 25
+			
 
-			wallsBottom[b].x = elements[b].x + (elements[b].width / 2) 
-			wallsBottom[b].y = elements[b].y + (elements[b].height / 2) + 25
-
+			if wallsBottom[b] ~= nil and wallsTop[b] ~= nil then
+				wallsTop[b].x, wallsTop[b].y = elements[b].x + (elements[b].width/2), elements[b].y - (elements[b].height / 2) - 25
+				wallsBottom[b].x = elements[b].x + (elements[b].width / 2) 
+				wallsBottom[b].y = elements[b].y + (elements[b].height / 2) + 25
+			end
 		--	hitBoxTop[b].x, hitBoxTop[b].y = (elements[b].x + (hitBoxTop[b].width / 2) -5 ), elements[b].y - (elements[b].height / 2) + 22
 
 		else
@@ -430,6 +481,12 @@ function moveHoops()
 			wallsBottom:remove(wallsBottom[b])
 			hitBoxTop:remove(hitBoxTop[b])
 
+			elements[b] = nil
+			elementsTop[b] = nil
+			wallsTop[b] = nil
+			wallBottom[b] = nil
+			hitBoxTop[b] = nil
+
 		end	
 	end
 
@@ -437,7 +494,6 @@ function moveHoops()
 end
 
 function scrollBackground()
-	
 	ground.x = ground.x - layerOneSpeed
 	ground2.x = ground2.x - layerOneSpeed
 
@@ -489,59 +545,49 @@ local prevY = 0
 function enterFrame(event)
 	--if bird y is less than -200.. let's cap it at 200
 	scrollBackground()
+
 	flyingBird.x = dummyBird.x
 	flyingBird.y = dummyBird.y
-
-	if(dummyBird.y < -700) then
-		gameOver()
+	--print('db y: ' .. dummyBird.y)
+	if(dummyBird.y < -20) then
+		dummyBird.y = -20
 	end
 	
 	if(flyingBird.y > prevY) then
 		diffY = math.ceil( dummyBird.y - prevY )
-		flyingBird.rotation = (diffY * 1.1)
+		flyingBird.rotation = (diffY * 1.5)
 	else
 		diffY = math.ceil( prevY  - dummyBird.y)
-		flyingBird.rotation = (-diffY * 1.1)
+		flyingBird.rotation = (-diffY * 1.5)
 	end
 
 	prevY = dummyBird.y
 end
 
-function scene:exitScene(event)
-
+function scene:destroy(event)
+	local group = self.view
+	
 	Runtime:removeEventListener("touch", flyUp)
 	Runtime:removeEventListener("enterFrame", enterFrame)
-	timer.cancel(addHoopTimer)
-	timer.cancel(moveHoopTimer)
+	
+	if(moveHoopTimer ~= nil) then
+		timer.cancel(moveHoopTimer)
+	end
 
+	if(addHoopTimer ~= nil) then
+		timer.cancel(addHoopTimer)
+	end
+	
+	if(difficultyTimer ~= nil) then
+		timer.cancel(difficultyTimer)
+	end
 end
 
-function scene:destroyScene(event)
-
-end
-
------------------------------------------------------------------------------------------
--- END OF YOUR IMPLEMENTATION
------------------------------------------------------------------------------------------
--- "createScene" event is dispatched if scene's view does not exist
-scene:addEventListener( "createScene", scene )
-
--- "enterScene" event is dispatched whenever scene transition has finished
-scene:addEventListener( "enterScene", scene )
-
--- "exitScene" event is dispatched whenever before next scene's transition begins
-scene:addEventListener( "exitScene", scene )
-
+scene:addEventListener( "create", scene )
+scene:addEventListener( "show", scene )
 Runtime:addEventListener("touch", flyUp)
-
 Runtime:addEventListener("collision", onCollision)
-
 Runtime:addEventListener( "enterFrame", enterFrame)
--- "destroyScene" event is dispatched before view is unloaded, which can be
--- automatically unloaded in low memory situations, or explicitly via a call to
--- storyboard.purgeScene() or storyboard.removeScene().
-scene:addEventListener( "destroyScene", scene )
-
------------------------------------------------------------------------------------------
+scene:addEventListener( "destroy", scene )
 
 return scene

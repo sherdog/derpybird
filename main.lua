@@ -1,4 +1,3 @@
 display.setStatusBar( display.HiddenStatusBar )
-
-local storyboard = require "storyboard"
-storyboard.gotoScene( "menu" )
+local composer = require( "composer" )
+composer.gotoScene( "menu" )

@@ -4,8 +4,8 @@ local widget = require("widget")
 
 local mydata = require( "mydata" )
 
-local storyboard = require("storyboard")
-local scene = storyboard.newScene()
+local composer = require("composer")
+local scene = composer.newScene()
 
 
 function startGame(event)

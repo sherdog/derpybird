@@ -1,22 +1,48 @@
 settings =
 {
     plugins = {
-        ["CoronaProvider.ads.admob"] =
+        ["plugin.facebook.v4"] =
         {
-            publisherId = "com.coronalabs"
+            publisherId = "com.coronalabs",
+            supportedPlatforms = { iphone=true, android=true, ["android-kindle"]=true }
         },
+        ["plugin.google.play.services"] =
+        {
+          publisherId = "com.coronalabs",
+          supportedPlatforms = { android=true }
+        },
+        ["shared.android.support.v4"] =
+        {
+          publisherId = "com.coronalabs",
+          supportedPlatforms = { android=true }
+        },
+        ["plugin.adcolony"] =
+        {
+          publisherId = "com.coronalabs",
+          supportedPlatforms = { android=true, iphone=true }
+        }
     },
     iphone =
     {
         plist =
         {
+            NSAppTransportSecurity = { NSAllowsArbitraryLoads=true },
+            MinimumOSVersion = "7.0",
+            NSPhotoLibraryUsageDescription = "This app would like to access the photo library.",
+            UIApplicationExitsOnSuspend = false,
             FacebookAppID = "1482803695265952",
-            CFBundleURLTypes = {
-                {
-                CFBundleURLSchemes = { "1482803695265952", }
-                }
+            CFBundleURLTypes =
+            {
+                { CFBundleURLSchemes = { "fb1482803695265952", } }
             },
-            UIAppFonts = { "eight_bit_madness.ttf" },
+            LSApplicationQueriesSchemes =
+            {
+                "fb",
+                "fbapi",
+                "fbauth2",
+                "fb-messenger-api",
+                "fbshareextension"
+            },
             CFBundleIconFiles = {
             "Icon.png",
             "Icon@2x.png",
@@ -37,8 +63,10 @@ settings =
     },
      android =
     {
+        facebookAppId = "1482803695265952",
         usesPermissions =
         {
+            "android.permission.WRITE_EXTERNAL_STORAGE",
             "android.permission.INTERNET",
             "android.permission.ACCESS_NETWORK_STATE",
         },
